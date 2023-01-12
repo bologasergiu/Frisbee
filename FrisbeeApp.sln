@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrisbeeApp", "FrisbeeApp\FrisbeeApp.csproj", "{498C0FD1-3824-4ADF-A5F9-C9D90223DBAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrisbeeApp.Context", "FrisbeeApp.Context\FrisbeeApp.Context.csproj", "{E4187E8F-E9A2-4EB5-AF5A-70668C77608D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrisbeeApp.Logic", "FrisbeeApp.Logic\FrisbeeApp.Logic.csproj", "{9BCF1299-3040-49D3-810A-D797A62FE67D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrisbeeApp.DatabaseModels", "FrisbeeApp.DatabaseModels\FrisbeeApp.DatabaseModels.csproj", "{8B9DD10A-AD67-4FBA-9115-D0FEA57D04D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrisbeeApp.Controllers", "FrisbeeApp.Controllers\FrisbeeApp.Controllers.csproj", "{05471ABB-76F6-4691-88BC-BC8B1730169B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{498C0FD1-3824-4ADF-A5F9-C9D90223DBAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{498C0FD1-3824-4ADF-A5F9-C9D90223DBAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{498C0FD1-3824-4ADF-A5F9-C9D90223DBAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{498C0FD1-3824-4ADF-A5F9-C9D90223DBAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4187E8F-E9A2-4EB5-AF5A-70668C77608D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4187E8F-E9A2-4EB5-AF5A-70668C77608D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4187E8F-E9A2-4EB5-AF5A-70668C77608D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4187E8F-E9A2-4EB5-AF5A-70668C77608D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BCF1299-3040-49D3-810A-D797A62FE67D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BCF1299-3040-49D3-810A-D797A62FE67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BCF1299-3040-49D3-810A-D797A62FE67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BCF1299-3040-49D3-810A-D797A62FE67D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B9DD10A-AD67-4FBA-9115-D0FEA57D04D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B9DD10A-AD67-4FBA-9115-D0FEA57D04D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B9DD10A-AD67-4FBA-9115-D0FEA57D04D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B9DD10A-AD67-4FBA-9115-D0FEA57D04D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05471ABB-76F6-4691-88BC-BC8B1730169B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05471ABB-76F6-4691-88BC-BC8B1730169B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05471ABB-76F6-4691-88BC-BC8B1730169B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05471ABB-76F6-4691-88BC-BC8B1730169B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D05894EA-3E3E-4078-902A-A449F47D223C}
+	EndGlobalSection
+EndGlobal
