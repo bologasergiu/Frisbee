@@ -1,6 +1,17 @@
+using FrisbeeApp.Context;
+using FrisbeeApp.DatabaseModels.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<FrisbeeAppContext>(option =>
+    option.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnectionString") ?? throw new InvalidOperationException("Connection string SQLConnectioString not found")));
+
+builder.Services.AddIdentity<User, Role>()
+    .AddEntityFrameworkStores<FrisbeeAppContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
