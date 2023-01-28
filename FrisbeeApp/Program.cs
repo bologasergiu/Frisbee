@@ -1,4 +1,5 @@
 using FrisbeeApp.Context;
+using FrisbeeApp.Controllers.Mappers;
 using FrisbeeApp.DatabaseModels.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<FrisbeeAppContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAutoMapper(typeof(LoginApiModelProfile));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

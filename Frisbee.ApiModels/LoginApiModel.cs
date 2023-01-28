@@ -7,16 +7,10 @@ using System.Threading.Tasks;
 
 namespace Frisbee.ApiModels
 {
-    public class LoginApiModel : IValidatableObject
+    public class LoginApiModel
     {
-        public LoginApiModel() { }
         [EmailAddress]
-        public String Email { get; set; } 
-        public String Password { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-           yield return new ValidationResult(errorMessage: "Username or password are incorrect. Please try again !");
-        }
+        public string Email { get; set; } 
+        public string Password { get; set; }
     }
 }
