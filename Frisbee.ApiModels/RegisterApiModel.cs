@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FrisbeeApp.DatabaseModels.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using System.Security.AccessControl;
 
 namespace Frisbee.ApiModels
 {
@@ -19,12 +21,20 @@ namespace Frisbee.ApiModels
             "one lowercase letter, one secial character and at leat one digit.")]
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
+        public  ChosenRole Role { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if(ConfirmPassword.CompareTo(Password) != 0)
             {
                 yield return new ValidationResult(errorMessage: "Passwords do not match.", memberNames: new[] {"Password"});
+            }
+            if (Role != null)
+            {
+                if (!Enum.IsDefined(typeof(ChosenRole), Role))
+                {
+                    yield return new ValidationResult(errorMessage: "Invalid Role.", memberNames: new[] { "Role" });
+                }
             }
         }
     }

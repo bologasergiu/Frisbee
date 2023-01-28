@@ -8,7 +8,8 @@ namespace FrisbeeApp.Controllers.Mappers
     {
         public RegisterApiModelProfile()
         {
-            CreateMap<RegisterApiModel, User>();
+            CreateMap<RegisterApiModel, User>()
+               .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
         }
 
     }

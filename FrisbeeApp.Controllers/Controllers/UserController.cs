@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,12 @@ namespace FrisbeeApp.Controllers.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
-        public UserController(IMapper mapper) 
+        private readonly IAuthRepository _repository;
+
+        public UserController(IMapper mapper, IAuthRepository repository) 
         {
             _mapper = mapper;
+            _repository = repository;
         }
 
         [AllowAnonymous]
@@ -23,7 +27,8 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> Register(RegisterApiModel registerApiModel)
         {
             var registerUser = _mapper.Map<User>(registerApiModel);
-            return true;
+
+            return await _repository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
         }
 
         [AllowAnonymous]
