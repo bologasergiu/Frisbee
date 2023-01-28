@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrisbeeApp.DatabaseModels",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrisbeeApp.Controllers", "FrisbeeApp.Controllers\FrisbeeApp.Controllers.csproj", "{05471ABB-76F6-4691-88BC-BC8B1730169B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frisbee.ApiModels", "Frisbee.ApiModels\Frisbee.ApiModels.csproj", "{8E57E389-3386-41BD-92F3-01CE6FE42A9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{05471ABB-76F6-4691-88BC-BC8B1730169B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05471ABB-76F6-4691-88BC-BC8B1730169B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05471ABB-76F6-4691-88BC-BC8B1730169B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E57E389-3386-41BD-92F3-01CE6FE42A9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E57E389-3386-41BD-92F3-01CE6FE42A9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E57E389-3386-41BD-92F3-01CE6FE42A9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E57E389-3386-41BD-92F3-01CE6FE42A9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
