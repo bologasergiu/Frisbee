@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Frisbee.ApiModels\Frisbee.ApiModels.csproj" />
     <ProjectReference Include="..\FrisbeeApp.Context\FrisbeeApp.Context.csproj" />
     <ProjectReference Include="..\FrisbeeApp.DatabaseModels\FrisbeeApp.DatabaseModels.csproj" />
     <ProjectReference Include="..\FrisbeeApp.Logic\FrisbeeApp.Logic.csproj" />
