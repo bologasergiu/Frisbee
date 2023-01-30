@@ -34,10 +34,19 @@ namespace FrisbeeApp.Controllers.Controllers
         [AllowAnonymous]
         [Route("login")]
         [HttpPost]
-        public async Task<bool> Login(LoginApiModel loginApiModel)
+        public async Task<TokenDTO> Login(LoginApiModel loginApiModel)
         {
             var loginUser = _mapper.Map<LoginDTO>(loginApiModel);
-            return true;    
+
+            return await _repository.Login(loginUser);
+        }
+
+        [Authorize]
+        [Route("logout")]
+        [HttpPost]
+        public async Task Logout()
+        {
+            await _repository.Logout();
         }
     };
 }

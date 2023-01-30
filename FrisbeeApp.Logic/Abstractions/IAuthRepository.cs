@@ -6,7 +6,7 @@ namespace FrisbeeApp.Logic.Abstractisations
     public interface IAuthRepository
     {
         Task<bool> Register(User user, string password, ChosenRole role);
-        //Task<TokenDto> Login(LoginDto loginUser);
-        //Task Logout();
+        Task<TokenDTO> Login(LoginDTO loginUser);
+        Task Logout();
     }
 }

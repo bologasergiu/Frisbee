@@ -31,7 +31,7 @@ namespace Frisbee.ApiModels
             }
             if (Role != null)
             {
-                if (!Enum.IsDefined(typeof(ChosenRole), Role))
+                if (!Enum.IsDefined(typeof(ChosenRole), Role) || Role == ChosenRole.Admin)
                 {
                     yield return new ValidationResult(errorMessage: "Invalid Role.", memberNames: new[] { "Role" });
                 }
