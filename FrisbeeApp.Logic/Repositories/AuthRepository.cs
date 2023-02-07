@@ -56,6 +56,7 @@ namespace FrisbeeApp.Logic.Repositories
 
         public async Task<bool> Register(User user, string password, ChosenRole role)
         {
+            var existingTeam = await _context.Teams.FirstOrDefaultAsync(x=>x.TeamName==user.Team) ?? throw new EntityNotFoundException("Team not found!");
             var isUserRegistered = (await _userManager.CreateAsync(user, password)).Succeeded;
             var isUserAssignedRole = (await _userManager.AddToRoleAsync(user, role.ToString())).Succeeded;
 
