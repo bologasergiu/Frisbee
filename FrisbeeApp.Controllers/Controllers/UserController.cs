@@ -48,5 +48,13 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             await _repository.Logout();
         }
+
+        [Authorize(Roles ="Coach, Admin")]
+        [Route("approve-account")]
+        [HttpPut]
+        public async Task<bool> ApproveAccount(Guid id)
+        {
+            return await _repository.ApproveAccount(id, User.Identity.Name);
+        }
     };
 }

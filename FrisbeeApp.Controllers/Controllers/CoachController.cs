@@ -19,13 +19,5 @@ namespace FrisbeeApp.Controllers.Controllers
             _mapper = mapper;
             _repository = repository;
         }
-
-        [Route("approve-account")]
-        [HttpPut]
-        public async Task<bool> ApproveAccount(Guid id)
-        {
-            return await _repository.ApproveAccount(id);
-        }
-
     }
 }
