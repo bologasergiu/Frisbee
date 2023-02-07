@@ -91,5 +91,29 @@ namespace FrisbeeApp.Logic.Repositories
         {
             await _signInManager.SignOutAsync();
         }
+        public async Task<bool> ApproveAccount(Guid id, string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id) ?? throw new EntityNotFoundException("UserId does not exist.");
+            var dbRole = await GetRole(dbUser.Email);
+            var currentUserRole = await GetRole(email);
+            if (currentUserRole == ChosenRole.Coach.ToString())
+            {
+                if (dbRole == ChosenRole.Player.ToString())
+                {
+                    dbUser.AccountApproved = true;
+                    _context.Users.Update(dbUser);
+                }
+            }
+            else if(currentUserRole == ChosenRole.Admin.ToString())
+            {
+                if (dbRole == ChosenRole.Coach.ToString())
+                {
+                    dbUser.AccountApproved = true;
+                    _context.Users.Update(dbUser);
+                }
+            }
+
+            return await _context.SaveChangesAsync() == 1;
+        }
     }
 }

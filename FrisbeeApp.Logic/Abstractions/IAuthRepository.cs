@@ -9,5 +9,6 @@ namespace FrisbeeApp.Logic.Abstractisations
         Task<TokenDTO> Login(LoginDTO loginUser);
         Task Logout();
         Task<string> GetRole(string email);
+        Task<bool> ApproveAccount(Guid id, string email);
     }
 }

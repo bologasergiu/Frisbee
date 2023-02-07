@@ -16,17 +16,5 @@ namespace FrisbeeApp.Logic.Repositories
             _context= context;  
             _repository= repository;    
         }
-        public async Task<bool> ApproveAccount(Guid id)
-        {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id) ?? throw new EntityNotFoundException("UserId does not exist.");
-            var role = await _repository.GetRole(dbUser.Email);
-            if (role == ChosenRole.Player.ToString())
-            {
-                dbUser.AccountApproved = true;
-                _context.Users.Update(dbUser);
-            }
-           
-            return await _context.SaveChangesAsync() == 1;
-        }
     }
 }
