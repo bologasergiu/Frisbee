@@ -10,6 +10,7 @@ namespace FrisbeeApp.DatabaseModels.Models
         public Gender Gender { get; set; }
         public string Team { get; set; }
         public bool Certified { get; set; }
+        public bool AccountApproved { get; set; }
 
     }
 }

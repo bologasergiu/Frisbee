@@ -8,5 +8,6 @@ namespace FrisbeeApp.Logic.Abstractisations
         Task<bool> Register(User user, string password, ChosenRole role);
         Task<TokenDTO> Login(LoginDTO loginUser);
         Task Logout();
+        Task<string> GetRole(string email);
     }
 }
