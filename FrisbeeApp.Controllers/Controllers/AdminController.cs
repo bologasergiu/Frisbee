@@ -32,5 +32,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             return await _repository.DeleteUser(Id);
         }
+
+        
     }
 }

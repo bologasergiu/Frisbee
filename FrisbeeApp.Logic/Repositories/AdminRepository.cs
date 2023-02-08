@@ -43,5 +43,7 @@ namespace FrisbeeApp.Logic.Repositories
 
             return removedRole.Succeeded && removedUser.Succeeded;
         }
+
+        
     }
 }

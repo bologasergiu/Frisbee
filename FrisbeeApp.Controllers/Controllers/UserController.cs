@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +14,14 @@ namespace FrisbeeApp.Controllers.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IAuthRepository _repository;
+        private readonly IAuthRepository _authRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserController(IMapper mapper, IAuthRepository repository) 
+        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository)
         {
             _mapper = mapper;
-            _repository = repository;
+            _authRepository = repository;
+            _userRepository = userRepository;
         }
 
         [AllowAnonymous]
@@ -28,7 +31,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var registerUser = _mapper.Map<User>(registerApiModel);
 
-            return await _repository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
+            return await _authRepository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
         }
 
         [AllowAnonymous]
@@ -38,7 +41,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var loginUser = _mapper.Map<LoginDTO>(loginApiModel);
 
-            return await _repository.Login(loginUser);
+            return await _authRepository.Login(loginUser);
         }
 
         [Authorize]
@@ -46,15 +49,39 @@ namespace FrisbeeApp.Controllers.Controllers
         [HttpPost]
         public async Task Logout()
         {
-            await _repository.Logout();
+            await _authRepository.Logout();
         }
 
-        [Authorize(Roles ="Coach, Admin")]
+        [Authorize(Roles = "Coach, Admin")]
         [Route("approve-account")]
         [HttpPut]
         public async Task<bool> ApproveAccount(Guid id)
         {
-            return await _repository.ApproveAccount(id, User.Identity.Name);
+            return await _authRepository.ApproveAccount(id, User.Identity.Name);
+        }
+
+        [Authorize]
+        [Route("view-team")]
+        [HttpGet]
+        public async Task<List<TeamMemberDTO>> ViewTeam(string teamName)
+        { 
+            return await _userRepository.ViewTeam(teamName);
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("update-user")]
+        public async Task<bool> UpdateUser(Guid Id, User user)
+        {
+            return await _userRepository.UpdateUser(Id, user);
+        }
+
+        [Authorize(Roles ="Admin, Coach")]
+        [HttpPut]
+        [Route("update-team")]
+        public async Task<bool> UpdateTeam(Guid Id, string team)
+        {
+            return await _userRepository.UpdateTeam(Id, team);
         }
     };
 }

@@ -1,4 +1,6 @@
-﻿namespace FrisbeeApp.Logic.Abstractions
+﻿using FrisbeeApp.DatabaseModels.Models;
+
+namespace FrisbeeApp.Logic.Abstractions
 {
     public interface IAdminRepository 
     {
