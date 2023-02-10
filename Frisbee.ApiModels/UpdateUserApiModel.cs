@@ -22,7 +22,7 @@ namespace Frisbee.ApiModels
             {
                 yield return new ValidationResult(errorMessage: "Wrong Birthdate", memberNames: new[] { "BirthDate" });
             }
-            if (Gender != null)
+            if (Gender != 0)
             {
                 if (!Enum.IsDefined(typeof(Gender), Gender))
                 {
