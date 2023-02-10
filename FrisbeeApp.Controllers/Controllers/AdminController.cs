@@ -25,5 +25,12 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             return await _repository.CreateTeam(teamName);
         }
+
+        [HttpPut]
+        [Route("delete-user")]
+        public async Task<bool> DeleteUser(Guid Id)
+        {
+            return await _repository.DeleteUser(Id);
+        }       
     }
 }
