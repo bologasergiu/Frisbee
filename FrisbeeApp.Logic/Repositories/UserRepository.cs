@@ -31,7 +31,7 @@ namespace FrisbeeApp.Logic.Repositories
             foreach (var teamMember in teamMembers) 
             {
                 var role = await _authRepository.GetRole(teamMember.Email);
-                if (role != null)
+                if (role != null && role != ChosenRole.Coach.ToString())
                 {
                     var member = _mapper.Map<TeamMemberDTO>(teamMember);
                     member.Role = role;
@@ -44,13 +44,19 @@ namespace FrisbeeApp.Logic.Repositories
 
         public async Task<bool> UpdateUser(Guid Id, User user)
         {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == Id);
-            dbUser.FirstName = user.FirstName;
-            dbUser.LastName = user.LastName;
-            dbUser.Email = user.Email;
-            dbUser.BirthDate = user.BirthDate;
-            dbUser.Gender = user.Gender;
-            dbUser.PhoneNumber = user.PhoneNumber;
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("User not found"); 
+            dbUser.FirstName = user.FirstName!=null ? user.FirstName : dbUser.FirstName;
+            dbUser.LastName = user.LastName!=null ? user.LastName : dbUser.LastName;
+            if(dbUser.Email != null)
+            {
+                dbUser.UserName = user.Email;
+                dbUser.NormalizedUserName = user.Email.ToUpper();
+                dbUser.NormalizedEmail = user.Email.ToUpper();
+                dbUser.Email = user.Email;
+            }
+            dbUser.BirthDate = user.BirthDate != DateTime.MinValue ? user.BirthDate : dbUser.BirthDate;
+            dbUser.Gender = user.Gender != 0 ? user.Gender : dbUser.Gender;
+            dbUser.PhoneNumber = user.PhoneNumber!= null ? user.PhoneNumber : dbUser.PhoneNumber;
 
              _context.Users.Update(dbUser);
 
@@ -59,8 +65,9 @@ namespace FrisbeeApp.Logic.Repositories
 
         public async Task<bool> UpdateTeam(Guid Id, string team)
         {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == Id);
-            dbUser.Team= team;
+            var existingTeam = await _context.Teams.FirstOrDefaultAsync(x => x.TeamName == team) ?? throw new EntityNotFoundException("Team not found!");
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("User ID not found"); 
+            dbUser.Team= existingTeam.TeamName;
 
             _context.Users.Update(dbUser);
 

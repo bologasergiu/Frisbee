@@ -51,7 +51,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             await _authRepository.Logout();
         }
-
+        
         [Authorize(Roles = "Coach, Admin")]
         [Route("approve-account")]
         [HttpPut]
@@ -59,7 +59,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             return await _authRepository.ApproveAccount(id, User.Identity.Name);
         }
-
+        
         [Authorize]
         [Route("view-team")]
         [HttpGet]
@@ -67,21 +67,23 @@ namespace FrisbeeApp.Controllers.Controllers
         { 
             return await _userRepository.ViewTeam(teamName);
         }
-
+        
         [Authorize]
-        [HttpPut]
         [Route("update-user")]
-        public async Task<bool> UpdateUser(Guid Id, User user)
+        [HttpPut]
+        public async Task<bool> UpdateUser(Guid Id, UpdateUserApiModel updateUserApiModel)
         {
+            var user = _mapper.Map<User>(updateUserApiModel);
             return await _userRepository.UpdateUser(Id, user);
         }
 
         [Authorize(Roles ="Admin, Coach")]
-        [HttpPut]
         [Route("update-team")]
+        [HttpPut]
         public async Task<bool> UpdateTeam(Guid Id, string team)
         {
             return await _userRepository.UpdateTeam(Id, team);
         }
+        
     };
 }

@@ -1,4 +1,5 @@
-﻿using FrisbeeApp.DatabaseModels.Models;
+﻿using Frisbee.ApiModels;
+using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.DtoModels;
 
 namespace FrisbeeApp.Logic.Abstractions

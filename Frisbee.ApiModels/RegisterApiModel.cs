@@ -1,7 +1,4 @@
-﻿using FrisbeeApp.DatabaseModels.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using System.Security.AccessControl;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Frisbee.ApiModels
 {
@@ -35,6 +32,10 @@ namespace Frisbee.ApiModels
                 {
                     yield return new ValidationResult(errorMessage: "Invalid Role.", memberNames: new[] { "Role" });
                 }
+            }
+            if (BirthDate > DateTime.Now)
+            {
+                yield return new ValidationResult(errorMessage: "Wrong Birthdate", memberNames: new[] { "BirthDate" });
             }
         }
     }

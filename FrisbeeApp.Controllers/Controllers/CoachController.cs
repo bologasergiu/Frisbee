@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FrisbeeApp.Logic.Abstractions;
-using FrisbeeApp.Logic.Abstractisations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

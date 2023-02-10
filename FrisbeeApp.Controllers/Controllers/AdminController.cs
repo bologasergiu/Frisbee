@@ -31,8 +31,6 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> DeleteUser(Guid Id)
         {
             return await _repository.DeleteUser(Id);
-        }
-
-        
+        }       
     }
 }
