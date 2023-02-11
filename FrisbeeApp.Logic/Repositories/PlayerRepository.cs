@@ -1,0 +1,43 @@
+﻿using FrisbeeApp.Context;
+using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.Logic.Abstractions;
+using FrisbeeApp.Logic.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
+
+namespace FrisbeeApp.Logic.Repositories
+{
+    public class PlayerRepository : IPlayerRepository
+    {
+        private readonly FrisbeeAppContext _context;
+
+        public PlayerRepository(FrisbeeAppContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<bool> AddTimeOffRequest(TimeOffRequest timeOffRequest, string email)
+        {
+            timeOffRequest.Id = Guid.NewGuid();
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email) ?? throw new EntityNotFoundException("User does not exist.");
+            timeOffRequest.UserEmail = email;
+            timeOffRequest.UserName = dbUser.FirstName + " " + dbUser.LastName;
+            timeOffRequest.Status = RequestStatus.Pending;
+            await _context.TimeOffRequests.AddAsync(timeOffRequest);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return true;
+
+            return false;
+        }
+
+        public async Task<List<TimeOffRequest>> ViewAllTimeOffRequest(string email)
+        {
+            var existingTimeOffRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.UserEmail == email) ?? throw new EntityNotFoundException("Team not found!");
+            var timeOffRequests = await _context.TimeOffRequests.Where(x=>x.UserEmail== email).ToListAsync();
+
+            return timeOffRequests;
+        }
+    }
+}
