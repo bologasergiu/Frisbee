@@ -6,5 +6,6 @@ namespace FrisbeeApp.Logic.Abstractions
     {
         Task<bool> AddTimeOffRequest(TimeOffRequest timeOffRequest, string email);
         Task<List<TimeOffRequest>> ViewAllTimeOffRequest(string email);
+        Task<bool> DeleteTimeOffRequest(Guid Id);
     }
 }

@@ -13,7 +13,7 @@ namespace Frisbee.ApiModels
             if (StartDate < DateTime.Now)
             {
                 yield return new ValidationResult(errorMessage: "Date can't be in the past!", memberNames: new[] { "StartDate" });
-            }
+            } 
             if(EndDate.Day - StartDate.Day > 14)
             {
                 yield return new ValidationResult(errorMessage: "TimeOff request should be less than 14 days", memberNames: new[] { "EndDate" });

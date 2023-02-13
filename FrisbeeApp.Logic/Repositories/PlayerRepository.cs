@@ -24,12 +24,26 @@ namespace FrisbeeApp.Logic.Repositories
             timeOffRequest.UserEmail = email;
             timeOffRequest.UserName = dbUser.FirstName + " " + dbUser.LastName;
             timeOffRequest.Status = RequestStatus.Pending;
+            timeOffRequest.TeamName = dbUser.Team;
             await _context.TimeOffRequests.AddAsync(timeOffRequest);
             var result = await _context.SaveChangesAsync();
             if (result > 0)
                 return true;
 
             return false;
+        }
+
+        public async Task<bool> DeleteTimeOffRequest(Guid Id)
+        {
+            var existingTimeOffRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("Timeoff request does not exist!");
+            if (existingTimeOffRequest.Status == RequestStatus.Cancelled)
+            {
+                throw new RequestAlreadyCancelled("Request is already cancelled and can not be edited!");
+            }
+
+            existingTimeOffRequest.Status = RequestStatus.Cancelled;
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<List<TimeOffRequest>> ViewAllTimeOffRequest(string email)

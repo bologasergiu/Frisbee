@@ -1,9 +1,13 @@
-﻿using FrisbeeApp.Context;
+﻿using Frisbee.ApiModels;
+using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
+using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace FrisbeeApp.Logic.Repositories
 {
@@ -14,8 +18,8 @@ namespace FrisbeeApp.Logic.Repositories
 
         public CoachRepository(FrisbeeAppContext context, IAuthRepository repository)
         {
-            _context= context;  
-            _repository= repository;    
+            _context = context;
+            _repository = repository;
         }
 
         public async Task<bool> AddTraining(Training training, string email)
@@ -31,6 +35,44 @@ namespace FrisbeeApp.Logic.Repositories
                 return true;
 
             return false;
+        }
+
+        public async Task<List<TimeOffRequest>> ViewAllTimeOffRequestsPerTeam(string email)
+        {
+            var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Email== email) ?? throw new EntityNotFoundException("Team ID not found!");
+            var timeoffRequests = await _context.TimeOffRequests.Where(x => x.TeamName == existingUser.Team && x.Status==RequestStatus.Pending).ToListAsync();
+
+            return timeoffRequests;
+        }
+        public async Task<bool> ChangeTimeoffRequestStatus(Guid Id, RequestStatus status)
+        {
+
+            var timeOffRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("Timeoff request does not exist!");
+            if (timeOffRequest.Status == RequestStatus.Cancelled)
+            {
+                throw new RequestAlreadyCancelled("Request is already cancelled and can't be edited!");
+            }
+
+            switch (status)
+            {
+                case RequestStatus.Cancelled:
+                    timeOffRequest.Status = RequestStatus.Cancelled;
+                    break;
+                case RequestStatus.Rejected:
+                    timeOffRequest.Status = RequestStatus.Rejected;
+                    break;
+                case RequestStatus.Pending:
+                    timeOffRequest.Status = RequestStatus.Pending;
+                    break;
+                case RequestStatus.Approved:
+                    timeOffRequest.Status = RequestStatus.Approved;
+                    break;
+                default:
+                    throw new EntityNotFoundException("Status doesn't exist");
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

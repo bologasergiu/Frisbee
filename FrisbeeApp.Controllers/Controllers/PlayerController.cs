@@ -2,8 +2,10 @@
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
+using FrisbeeApp.Logic.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 
 namespace FrisbeeApp.Controllers.Controllers
@@ -34,9 +36,17 @@ namespace FrisbeeApp.Controllers.Controllers
         [Authorize(Roles = "Player, Coach")]
         [Route("view-all-timeoff-requests")]
         [HttpGet]
-        public async Task <List<TimeOffRequest>> ViewAllTimeoffRequests(string email)
+        public async Task <List<TimeOffRequest>> ViewAllTimeoffRequests()
         {
-            return await _repository.ViewAllTimeOffRequest(email);
+            return await _repository.ViewAllTimeOffRequest(User.Identity.Name);
+        }
+
+        [Authorize(Roles = "Player")]
+        [Route("delete-timeoff-request")]
+        [HttpPut]
+        public async Task<bool> DeleteTimeOffRequest(Guid Id)
+        {
+            return await _repository.DeleteTimeOffRequest(Id);
         }
     }
 }

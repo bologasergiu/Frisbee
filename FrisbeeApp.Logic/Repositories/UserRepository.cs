@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Frisbee.ApiModels;
 using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
+using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +74,52 @@ namespace FrisbeeApp.Logic.Repositories
             _context.Users.Update(dbUser);
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<TimeOffRequest>> ViewFilteredRequests(string email, SearchCriteria searchCriteria)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (dbUser == null)
+                return null;
+            var role = await _authRepository.GetRole(email);
+            if(role == "Coach")
+            {
+                var timeOffRequestsList =  _context.TimeOffRequests.Where(x => x.TeamName == dbUser.Team && x.Status == RequestStatus.Pending);
+                var filteredList = FilterRequestsByCriteria(timeOffRequestsList, searchCriteria).Result;
+                return filteredList;
+            }
+            else if(role == "Player")
+            {
+                var timeOffRequestsList =  _context.TimeOffRequests.Where(x => x.UserEmail == email);
+                var filteredList = FilterRequestsByCriteria(timeOffRequestsList, searchCriteria).Result;
+                return filteredList;
+            }
+            return null;
+        }
+
+        private async Task<List<TimeOffRequest>> FilterRequestsByCriteria(IQueryable<TimeOffRequest> timeoffRequests, SearchCriteria searchCriteria)
+        {
+            if (searchCriteria == null)
+            {
+                return await timeoffRequests.ToListAsync();
+            }
+
+            if (searchCriteria.Status != null)
+            {
+                timeoffRequests = timeoffRequests.Where(b => b.Status == searchCriteria.Status);
+            }
+
+            if (searchCriteria.PlayerName != null)
+            {
+                timeoffRequests = timeoffRequests.Where(b => b.UserName.ToLower().Contains(searchCriteria.PlayerName.ToLower()));
+            }
+
+            if (searchCriteria.RequestType != null)
+            {
+                timeoffRequests = timeoffRequests.Where(b => b.RequestType == searchCriteria.RequestType);
+            }
+
+            return await timeoffRequests.ToListAsync();
         }
     }
 }

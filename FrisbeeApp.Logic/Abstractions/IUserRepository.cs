@@ -1,5 +1,5 @@
-﻿using Frisbee.ApiModels;
-using FrisbeeApp.DatabaseModels.Models;
+﻿using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 
 namespace FrisbeeApp.Logic.Abstractions
@@ -9,5 +9,6 @@ namespace FrisbeeApp.Logic.Abstractions
         Task<List<TeamMemberDTO>> ViewTeam(string teamName);
         Task<bool> UpdateUser(Guid Id, User user);
         Task<bool> UpdateTeam(Guid Id, string team);
+        Task<List<TimeOffRequest>> ViewFilteredRequests(string email, SearchCriteria searchCriterea);
     }
 }

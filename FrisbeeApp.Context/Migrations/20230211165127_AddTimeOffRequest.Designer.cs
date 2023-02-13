@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FrisbeeApp.Context.Migrations
 {
     [DbContext(typeof(FrisbeeAppContext))]
-    [Migration("20230211094052_AddTimeOffRequest")]
+    [Migration("20230211165127_AddTimeOffRequest")]
     partial class AddTimeOffRequest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,6 +107,10 @@ namespace FrisbeeApp.Context.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("TeamName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserEmail")
                         .IsRequired()
