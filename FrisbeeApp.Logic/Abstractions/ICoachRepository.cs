@@ -1,5 +1,6 @@
 ﻿using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.Logic.Common;
 
 namespace FrisbeeApp.Logic.Abstractions
 {

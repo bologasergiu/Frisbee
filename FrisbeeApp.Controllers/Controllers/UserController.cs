@@ -85,15 +85,5 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             return await _userRepository.UpdateTeam(Id, team);
         }
-
-        [Authorize(Roles ="Coach, Player")]
-        [Route("view-filtered-requests")]
-        [HttpGet]
-        public async Task<List<TimeOffRequest>> ViewFilteredRequests([FromQuery] SearchCriteriaApiModel searchCriteriaApiModel)
-        {
-            var searchCriteria = _mapper.Map<SearchCriteria>(searchCriteriaApiModel);
-
-            return await _userRepository.ViewFilteredRequests(User.Identity.Name, searchCriteria);
-        }
     };
 }

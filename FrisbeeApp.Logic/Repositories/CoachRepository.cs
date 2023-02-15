@@ -1,13 +1,11 @@
-﻿using Frisbee.ApiModels;
+﻿using AutoMapper;
 using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
-using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+
 
 namespace FrisbeeApp.Logic.Repositories
 {
@@ -15,11 +13,13 @@ namespace FrisbeeApp.Logic.Repositories
     {
         private readonly FrisbeeAppContext _context;
         private readonly IAuthRepository _repository;
+        private readonly IMapper _mapper;
 
-        public CoachRepository(FrisbeeAppContext context, IAuthRepository repository)
+        public CoachRepository(FrisbeeAppContext context, IAuthRepository repository, IMapper mapper)
         {
             _context = context;
             _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddTraining(Training training, string email)

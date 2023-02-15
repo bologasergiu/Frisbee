@@ -2,11 +2,11 @@
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
-using FrisbeeApp.Logic.Exceptions;
+using FrisbeeApp.Logic.Common;
+using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
+
 
 namespace FrisbeeApp.Controllers.Controllers
 {
@@ -15,12 +15,15 @@ namespace FrisbeeApp.Controllers.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IPlayerRepository _repository;
+        private readonly IPlayerRepository _playerRepository;
+        private readonly IUserRepository _userRepository;
 
-        public PlayerController(IMapper mapper, IPlayerRepository repository)
+
+        public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository)
         {
             _mapper = mapper;
-            _repository = repository;
+            _playerRepository = playerRepository;
+            _userRepository = userRepository;
         }
 
         [Authorize(Roles="Player")]
@@ -30,7 +33,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var timeOffRequest = _mapper.Map<TimeOffRequest>(timeOffRequestApiModel);
 
-            return await _repository.AddTimeOffRequest(timeOffRequest, User.Identity.Name);
+            return await _playerRepository.AddTimeOffRequest(timeOffRequest, User.Identity.Name);
         }
 
         [Authorize(Roles = "Player, Coach")]
@@ -38,7 +41,7 @@ namespace FrisbeeApp.Controllers.Controllers
         [HttpGet]
         public async Task <List<TimeOffRequest>> ViewAllTimeoffRequests()
         {
-            return await _repository.ViewAllTimeOffRequest(User.Identity.Name);
+            return await _playerRepository.ViewAllTimeOffRequest(User.Identity.Name);
         }
 
         [Authorize(Roles = "Player")]
@@ -46,7 +49,19 @@ namespace FrisbeeApp.Controllers.Controllers
         [HttpPut]
         public async Task<bool> DeleteTimeOffRequest(Guid Id)
         {
-            return await _repository.DeleteTimeOffRequest(Id);
+            return await _playerRepository.DeleteTimeOffRequest(Id);
+        }
+
+        [Authorize(Roles = "Player")]
+        [Route("view-player-filtered-requests")]
+        [HttpGet]
+        public async Task<List<TimeOffRequestPlayerDTO>> PlayerFilteredRequests([FromQuery] SearchCriteriaApiModel searchCriteriaApiModel)
+        {
+            var searchCriteria = _mapper.Map<SearchCriteria>(searchCriteriaApiModel);
+
+            var timeOffRequestsList = await _userRepository.ViewFilteredRequests(User.Identity.Name, searchCriteria);
+
+            return _mapper.Map<List<TimeOffRequestPlayerDTO>>(timeOffRequestsList);
         }
     }
 }
