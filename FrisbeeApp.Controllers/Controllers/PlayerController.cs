@@ -47,9 +47,9 @@ namespace FrisbeeApp.Controllers.Controllers
         [Authorize(Roles = "Player")]
         [Route("delete-timeoff-request")]
         [HttpPut]
-        public async Task<bool> DeleteTimeOffRequest(Guid Id)
+        public async Task<bool> CancelledTimeOffRequest(Guid Id)
         {
-            return await _playerRepository.DeleteTimeOffRequest(Id);
+            return await _playerRepository.CancelledTimeOffRequest(Id);
         }
 
         [Authorize(Roles = "Player")]

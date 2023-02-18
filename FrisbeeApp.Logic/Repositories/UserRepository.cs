@@ -49,7 +49,7 @@ namespace FrisbeeApp.Logic.Repositories
             var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("User not found"); 
             dbUser.FirstName = user.FirstName!=null ? user.FirstName : dbUser.FirstName;
             dbUser.LastName = user.LastName!=null ? user.LastName : dbUser.LastName;
-            if(dbUser.Email != null)
+            if(user.Email != null)
             {
                 dbUser.UserName = user.Email;
                 dbUser.NormalizedUserName = user.Email.ToUpper();

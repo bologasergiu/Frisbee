@@ -1,11 +1,9 @@
 ﻿using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
-using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
+
 
 namespace FrisbeeApp.Logic.Repositories
 {
@@ -34,7 +32,7 @@ namespace FrisbeeApp.Logic.Repositories
             return false;
         }
 
-        public async Task<bool> DeleteTimeOffRequest(Guid Id)
+        public async Task<bool> CancelledTimeOffRequest(Guid Id)
         {
             var existingTimeOffRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("Timeoff request does not exist!");
             if (existingTimeOffRequest.Status == RequestStatus.Cancelled)
@@ -43,8 +41,11 @@ namespace FrisbeeApp.Logic.Repositories
             }
 
             existingTimeOffRequest.Status = RequestStatus.Cancelled;
-            await _context.SaveChangesAsync();
-            return true;
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return true;
+
+            return false;
         }
 
         public async Task<List<TimeOffRequest>> ViewAllTimeOffRequest(string email)

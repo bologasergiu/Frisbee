@@ -46,8 +46,8 @@ namespace FrisbeeApp.Controllers.Controllers
         [Route("change-timeoff-request-status")]
         [HttpPut]
         public async Task<bool> ChangeTimeoffRequestStatus(Guid Id, RequestStatus status)
-        {
-            return await _coachRepository.ChangeTimeoffRequestStatus(Id, status);
+        { 
+            return await _coachRepository.ChangeTimeoffRequestStatus(Id, status, User.Identity.Name);
         }
         
         [Authorize(Roles = "Coach")]
