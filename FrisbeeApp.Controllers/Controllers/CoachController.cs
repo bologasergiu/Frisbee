@@ -2,6 +2,8 @@
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
+using FrisbeeApp.Logic.Common;
+using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +15,13 @@ namespace FrisbeeApp.Controllers.Controllers
     public class CoachController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ICoachRepository _repository;
-
-        public CoachController(IMapper mapper, ICoachRepository repository)
+        private readonly ICoachRepository _coachRepository;
+        private readonly IUserRepository _userRepository;
+        public CoachController(IMapper mapper, ICoachRepository coachRepository, IUserRepository userRepository)
         {
             _mapper = mapper;
-            _repository = repository;
+            _coachRepository = coachRepository;
+            _userRepository = userRepository;
         }
 
         [Authorize(Roles ="Coach")]
@@ -28,7 +31,36 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var training = _mapper.Map<Training>(trainingApiModel);
 
-            return await _repository.AddTraining(training, User.Identity.Name);
+            return await _coachRepository.AddTraining(training, User.Identity.Name);
         }
+
+        [Authorize(Roles = "Coach")]
+        [Route("view-all-timeoff-requests-per-team")]
+        [HttpPost]
+        public async Task<List<TimeOffRequest>> ViewAllTimeoffRequestPerTeam()
+        {
+            return await _coachRepository.ViewAllTimeOffRequestsPerTeam(User.Identity.Name);
+        }
+
+        [Authorize(Roles = "Coach")]
+        [Route("change-timeoff-request-status")]
+        [HttpPut]
+        public async Task<bool> ChangeTimeoffRequestStatus(Guid Id, RequestStatus status)
+        { 
+            return await _coachRepository.ChangeTimeoffRequestStatus(Id, status, User.Identity.Name);
+        }
+        
+        [Authorize(Roles = "Coach")]
+        [Route("view-coach-filtered-requests")]
+        [HttpGet]
+        public async Task<List<TimeOffRequestCoachDTO>> CoachFilteredRequests([FromQuery] SearchCriteriaApiModel searchCriteriaApiModel)
+        {
+            var searchCriteria = _mapper.Map<SearchCriteria>(searchCriteriaApiModel);
+
+            var timeOffRequestsList = await _userRepository.ViewFilteredRequests(User.Identity.Name, searchCriteria);
+
+            return _mapper.Map<List<TimeOffRequestCoachDTO>>(timeOffRequestsList);
+        }
+        
     }
 }

@@ -3,6 +3,7 @@ using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
+using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -84,6 +85,5 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             return await _userRepository.UpdateTeam(Id, team);
         }
-        
     };
 }

@@ -12,6 +12,7 @@ namespace FrisbeeApp.Context
         public DbSet<Team> Teams { get; set; }
 
         public DbSet<Training> Trainings { get; set; }
+        public DbSet<TimeOffRequest> TimeOffRequests{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
