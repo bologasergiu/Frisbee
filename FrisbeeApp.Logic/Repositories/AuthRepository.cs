@@ -1,5 +1,6 @@
 ﻿using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Common;
@@ -19,14 +20,16 @@ namespace FrisbeeApp.Logic.Repositories
         private readonly IConfiguration _config;
         private readonly ITokenService _tokenService;
         private readonly FrisbeeAppContext _context;
+        private readonly IEmailService _emailService;
 
-        public AuthRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, ITokenService tokenService, FrisbeeAppContext context)
+        public AuthRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, ITokenService tokenService, FrisbeeAppContext context, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _config = config;
             _tokenService = tokenService;
             _context = context;
+            _emailService = emailService;
         }
 
         public async Task<TokenDTO> Login(LoginDTO loginUser)
@@ -60,7 +63,13 @@ namespace FrisbeeApp.Logic.Repositories
             var isUserRegistered = (await _userManager.CreateAsync(user, password)).Succeeded;
             var isUserAssignedRole = (await _userManager.AddToRoleAsync(user, role.ToString())).Succeeded;
 
-            return isUserRegistered && isUserAssignedRole;
+            var result = isUserRegistered && isUserAssignedRole;
+            if(result)
+            {
+                var message = new Message(new string[] { user.Email }, "Test email", "This is the content from our email.");
+                _emailService.SendEmail(message,EmailTemplateType.ConfirmAccountPlayer);
+            }
+            return result;
         }
 
         public async Task<string> GetRole(string email)

@@ -16,5 +16,6 @@
     <ProjectReference Include="..\Frisbee.ApiModels\Frisbee.ApiModels.csproj" />
     <ProjectReference Include="..\FrisbeeApp.Context\FrisbeeApp.Context.csproj" />
     <ProjectReference Include="..\FrisbeeApp.DatabaseModels\FrisbeeApp.DatabaseModels.csproj" />
+    <ProjectReference Include="..\FrisbeeApp.EmailSender\FrisbeeApp.EmailSender.csproj" />
   </ItemGroup>
 </Project>
