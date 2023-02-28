@@ -1,4 +1,4 @@
-﻿namespace FrisbeeApp.EmailSender
+﻿namespace FrisbeeApp.EmailSender.EmailService
 {
     public class EmailConfiguration
     {

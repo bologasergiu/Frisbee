@@ -1,8 +1,11 @@
-﻿using MailKit.Net.Smtp;
+﻿using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender.Abstractions;
+using FrisbeeApp.EmailSender.Common;
+using MailKit.Net.Smtp;
 using MimeKit;
-using Org.BouncyCastle.Asn1.Ocsp;
 
-namespace FrisbeeApp.EmailSender
+
+namespace FrisbeeApp.EmailSender.EmailService
 {
     public class EmailService : IEmailService
     {
@@ -14,34 +17,27 @@ namespace FrisbeeApp.EmailSender
             _templateFiller = templateFiller;
 
         }
-        public void SendEmail(Message message, EmailTemplateType emailTemplateType)
+        public bool SendEmail(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
         {
-            var emailMessage = CreateEmailMessage(message, emailTemplateType);
-            Send(emailMessage);
+            var emailMessage = CreateEmailMessage(message, emailTemplateType, model);
+            return Send(emailMessage);
         }
 
-        private MimeMessage CreateEmailMessage(Message message, EmailTemplateType emailTemplateType)
+        private MimeMessage CreateEmailMessage(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com","bologasergiu22@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            if(emailTemplateType == EmailTemplateType.ConfirmAccountPlayer)
+            if (emailTemplateType == EmailTemplateType.ConfirmAccountPlayer)
             {
                 var pathToFile = Path.GetDirectoryName(Directory.GetCurrentDirectory())
-            + Path.DirectorySeparatorChar.ToString()
-            + "FrisbeeApp.EmailSender"
-            + Path.DirectorySeparatorChar.ToString()
-            + "EmailTemplates"
-            + Path.DirectorySeparatorChar.ToString()
-            + "ConfirmAccountTemplate.cshtml";
-
-                object model = new
-                {
-                    FirstName = "Sergiu",
-                    LastName = "Bologa",
-                    Link = "blank"
-                };
+                + Path.DirectorySeparatorChar.ToString()
+                + "FrisbeeApp.EmailSender"
+                + Path.DirectorySeparatorChar.ToString()
+                + "EmailTemplates"
+                + Path.DirectorySeparatorChar.ToString()
+                + "ConfirmAccountTemplate.cshtml";
 
                 var body = _templateFiller.FillTemplate(pathToFile, model);
                 emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = body };
@@ -50,7 +46,7 @@ namespace FrisbeeApp.EmailSender
             return emailMessage;
         }
 
-        private void Send(MimeMessage mailMessage)
+        private bool Send(MimeMessage mailMessage)
         {
             using (var client = new SmtpClient())
             {
@@ -61,11 +57,11 @@ namespace FrisbeeApp.EmailSender
                     client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
 
                     client.Send(mailMessage);
+                    return true;
                 }
                 catch
                 {
-                    //log an error message or throw an exception or both.
-                    throw;
+                    return false;
                 }
                 finally
                 {

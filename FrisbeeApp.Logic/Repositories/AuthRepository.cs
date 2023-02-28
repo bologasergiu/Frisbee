@@ -1,6 +1,7 @@
 ﻿using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
-using FrisbeeApp.EmailSender;
+using FrisbeeApp.EmailSender.Abstractions;
+using FrisbeeApp.EmailSender.Common;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Common;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+
 
 namespace FrisbeeApp.Logic.Repositories
 {
@@ -64,11 +66,7 @@ namespace FrisbeeApp.Logic.Repositories
             var isUserAssignedRole = (await _userManager.AddToRoleAsync(user, role.ToString())).Succeeded;
 
             var result = isUserRegistered && isUserAssignedRole;
-            if(result)
-            {
-                var message = new Message(new string[] { user.Email }, "Test email", "This is the content from our email.");
-                _emailService.SendEmail(message,EmailTemplateType.ConfirmAccountPlayer);
-            }
+            
             return result;
         }
 
@@ -124,6 +122,38 @@ namespace FrisbeeApp.Logic.Repositories
             }
 
             return await _context.SaveChangesAsync() == 1;
+        }
+
+        public async Task<bool> ConfirmAccount(string email, string userToken)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if(dbUser != null && userToken != null && dbUser.EmailConfirmed != true)
+            {
+                var result = await _userManager.ConfirmEmailAsync(dbUser, userToken);
+                return result == IdentityResult.Success ? true : false;
+            }
+            return false;
+        }
+
+        public async Task<string> GenerateRegistrationToken(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            string token = null;
+            if(dbUser != null)
+            {
+                token = await _userManager.GenerateEmailConfirmationTokenAsync(dbUser);
+            }
+            return token;
+        }
+
+        public void SendEmail(EmailTemplateType templateType, string email, ConfirmEmailModel model)
+        {
+            var message = new Message(new string[] { email }, "FrisbeeApp Confirm Registration", "");
+            if (templateType == EmailTemplateType.ConfirmAccountPlayer)
+            {
+               _emailService.SendEmail(message, EmailTemplateType.ConfirmAccountPlayer, model);
+            }
+            
         }
     }
 }

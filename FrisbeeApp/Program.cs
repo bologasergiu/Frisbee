@@ -1,7 +1,9 @@
 using FrisbeeApp.Context;
 using FrisbeeApp.Controllers.Mappers;
 using FrisbeeApp.DatabaseModels.Models;
-using FrisbeeApp.EmailSender;
+using FrisbeeApp.EmailSender.Abstractions;
+using FrisbeeApp.EmailSender.Common;
+using FrisbeeApp.EmailSender.EmailService;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Repositories;

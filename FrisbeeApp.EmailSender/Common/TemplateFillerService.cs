@@ -1,6 +1,7 @@
-﻿using RazorEngineCore;
+﻿using FrisbeeApp.EmailSender.Abstractions;
+using RazorEngineCore;
 
-namespace FrisbeeApp.EmailSender 
+namespace FrisbeeApp.EmailSender.Common
 {
     public class TemplateFillerService : ITemplateFillerService
     {

@@ -7,6 +7,7 @@ using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace FrisbeeApp.Controllers.Controllers
 {
@@ -31,8 +32,17 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> Register(RegisterApiModel registerApiModel)
         {
             var registerUser = _mapper.Map<User>(registerApiModel);
-
-            return await _authRepository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
+            
+            var registerResult = await _authRepository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
+            var token = await _authRepository.GenerateRegistrationToken(registerUser.Email);
+            var link = Url.Action("ConfirmEmail", "Email", new { userEmail = HttpUtility.UrlEncode(registerUser.Email), userToken = HttpUtility.UrlEncode(token) }, protocol: Request.Scheme);
+            _authRepository.SendEmail(EmailTemplateType.ConfirmAccountPlayer, registerUser.Email, new EmailSender.Common.ConfirmEmailModel
+            {
+                FirstName = registerUser.FirstName,
+                LastName = registerUser.LastName,
+                Link = link
+            });
+            return registerResult;
         }
 
         [AllowAnonymous]

@@ -1,4 +1,4 @@
-﻿namespace FrisbeeApp.EmailSender
+﻿namespace FrisbeeApp.EmailSender.Abstractions
 {
     public interface ITemplateFillerService
     {

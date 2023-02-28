@@ -11,4 +11,8 @@
     <PackageReference Include="RazorEngineCore" Version="2022.8.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FrisbeeApp.DatabaseModels\FrisbeeApp.DatabaseModels.csproj" />
+  </ItemGroup>
+
 </Project>

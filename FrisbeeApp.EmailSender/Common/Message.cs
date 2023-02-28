@@ -1,6 +1,6 @@
 ﻿using MimeKit;
 
-namespace FrisbeeApp.EmailSender
+namespace FrisbeeApp.EmailSender.Common
 {
     public class Message
     {
@@ -12,7 +12,7 @@ namespace FrisbeeApp.EmailSender
         {
             To = new List<MailboxAddress>();
 
-            To.AddRange(to.Select(x => new MailboxAddress(x,x)));
+            To.AddRange(to.Select(x => new MailboxAddress(x, x)));
             Subject = subject;
             Content = content;
         }
