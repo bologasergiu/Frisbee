@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FrisbeeApp.Context\FrisbeeApp.Context.csproj" />
     <ProjectReference Include="..\FrisbeeApp.DatabaseModels\FrisbeeApp.DatabaseModels.csproj" />
   </ItemGroup>
 

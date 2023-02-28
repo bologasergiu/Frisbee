@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
-using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +18,15 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IMapper _mapper;
         private readonly IAuthRepository _authRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailServiceRepository;
 
-        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository)
+
+        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository, IEmailService emailServiceRepository)
         {
             _mapper = mapper;
             _authRepository = repository;
             _userRepository = userRepository;
+            _emailServiceRepository = emailServiceRepository;
         }
 
         [AllowAnonymous]
@@ -34,9 +37,9 @@ namespace FrisbeeApp.Controllers.Controllers
             var registerUser = _mapper.Map<User>(registerApiModel);
             
             var registerResult = await _authRepository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
-            var token = await _authRepository.GenerateRegistrationToken(registerUser.Email);
+            var token = await _emailServiceRepository.GenerateRegistrationToken(registerUser.Email);
             var link = Url.Action("ConfirmEmail", "Email", new { userEmail = HttpUtility.UrlEncode(registerUser.Email), userToken = HttpUtility.UrlEncode(token) }, protocol: Request.Scheme);
-            _authRepository.SendEmail(EmailTemplateType.ConfirmAccountPlayer, registerUser.Email, new EmailSender.Common.ConfirmEmailModel
+            _emailServiceRepository.TemplateType(EmailTemplateType.ConfirmAccountPlayer, registerUser.Email, new EmailSender.Common.ConfirmEmailModel
             {
                 FirstName = registerUser.FirstName,
                 LastName = registerUser.LastName,

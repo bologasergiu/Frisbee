@@ -11,8 +11,6 @@ namespace FrisbeeApp.Logic.Abstractisations
         Task Logout();
         Task<string> GetRole(string email);
         Task<bool> ApproveAccount(Guid id, string email);
-        Task<bool> ConfirmAccount(string email, string userToken);
-        void SendEmail(EmailTemplateType templateType, string email, ConfirmEmailModel model);
         Task<string> GenerateRegistrationToken (string email);
     }
 }

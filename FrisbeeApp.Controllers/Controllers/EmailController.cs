@@ -1,4 +1,5 @@
-﻿using FrisbeeApp.Logic.Abstractisations;
+﻿using FrisbeeApp.EmailSender.Abstractions;
+using FrisbeeApp.Logic.Abstractisations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -9,10 +10,10 @@ namespace FrisbeeApp.Controllers.Controllers
     [Route("Email")]
     public class EmailController : ControllerBase
     {
-        private readonly IAuthRepository _authRepository;
-        public EmailController(IAuthRepository authRepository)
+        private readonly IEmailService _emailServiceRepository;
+        public EmailController(IEmailService emailServiceRepository)
         {
-            _authRepository = authRepository;
+            _emailServiceRepository = emailServiceRepository;
         }
 
         [HttpGet]
@@ -22,7 +23,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var email = HttpUtility.UrlDecode(userEmail);
             var token = HttpUtility.UrlDecode(userToken);
-            return await _authRepository.ConfirmAccount(email, token);
+            return await _emailServiceRepository.ConfirmAccount(email, token);
         }
     }
 }

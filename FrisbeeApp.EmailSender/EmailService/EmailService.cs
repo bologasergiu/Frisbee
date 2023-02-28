@@ -1,21 +1,27 @@
-﻿using FrisbeeApp.DatabaseModels.Models;
+﻿using FrisbeeApp.Context;
+using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.EmailSender.Common;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MimeKit;
-
 
 namespace FrisbeeApp.EmailSender.EmailService
 {
     public class EmailService : IEmailService
     {
+        private readonly FrisbeeAppContext _context;
+        private readonly UserManager<User> _userManager;
         private readonly EmailConfiguration _emailConfig;
         private readonly ITemplateFillerService _templateFiller;
-        public EmailService(EmailConfiguration emailConfig, ITemplateFillerService templateFiller)
+
+        public EmailService(FrisbeeAppContext context, UserManager<User> userManager, EmailConfiguration emailConfig, ITemplateFillerService templateFiller)
         {
+            _context = context;
+            _userManager = userManager;
             _emailConfig = emailConfig;
             _templateFiller = templateFiller;
-
         }
         public bool SendEmail(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
         {
@@ -69,6 +75,37 @@ namespace FrisbeeApp.EmailSender.EmailService
                     client.Dispose();
                 }
             }
+        }
+        public void TemplateType(EmailTemplateType templateType, string email, ConfirmEmailModel model)
+        {
+            var message = new Message(new string[] { email }, "FrisbeeApp Confirm Registration", "");
+            if (templateType == EmailTemplateType.ConfirmAccountPlayer)
+            {
+                SendEmail(message, EmailTemplateType.ConfirmAccountPlayer, model);
+            }
+
+        }
+
+        public async Task<bool> ConfirmAccount(string email, string userToken)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (dbUser != null && userToken != null && dbUser.EmailConfirmed != true)
+            {
+                var result = await _userManager.ConfirmEmailAsync(dbUser, userToken);
+                return result == IdentityResult.Success ? true : false;
+            }
+            return false;
+        }
+
+        public async Task<string> GenerateRegistrationToken(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            string token = null;
+            if (dbUser != null)
+            {
+                token = await _userManager.GenerateEmailConfirmationTokenAsync(dbUser);
+            }
+            return token;
         }
     }
 }
