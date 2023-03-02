@@ -134,5 +134,15 @@ namespace FrisbeeApp.Logic.Repositories
             }
             return token;
         }
+        public async Task<bool> ConfirmAccount(string email, string userToken)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (dbUser != null && userToken != null && dbUser.EmailConfirmed != true)
+            {
+                var result = await _userManager.ConfirmEmailAsync(dbUser, userToken);
+                return result == IdentityResult.Success ? true : false;
+            }
+            return false;
+        }
     }
 }

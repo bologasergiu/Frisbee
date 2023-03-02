@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using Frisbee.ApiModels;
+using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FrisbeeApp.Controllers.Controllers
 {
@@ -14,14 +17,20 @@ namespace FrisbeeApp.Controllers.Controllers
     [Route("api/[controller]")]
     public class CoachController : ControllerBase
     {
+        private readonly FrisbeeAppContext _context;
         private readonly IMapper _mapper;
         private readonly ICoachRepository _coachRepository;
         private readonly IUserRepository _userRepository;
-        public CoachController(IMapper mapper, ICoachRepository coachRepository, IUserRepository userRepository)
+        private readonly IEmailService _emailService;
+        private List<string> emailList;
+
+        public CoachController(FrisbeeAppContext context, IMapper mapper, ICoachRepository coachRepository, IUserRepository userRepository, IEmailService emailService)
         {
+            _context = context;
             _mapper = mapper;
             _coachRepository = coachRepository;
             _userRepository = userRepository;
+            _emailService = emailService;
         }
 
         [Authorize(Roles ="Coach")]
@@ -30,6 +39,12 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> AddTraining(TrainingApiModel trainingApiModel)
         {
             var training = _mapper.Map<Training>(trainingApiModel);
+            var teamList = await _coachRepository.GetTeamEmailList(User.Identity.Name);
+            _emailService.SendNewTrainingNotification(EmailTemplateType.Training, teamList, new EmailSender.Common.TrainingModel
+            {
+                Date = training.Date.ToString(),
+                Field = training.Field.ToString()
+            }); ;
 
             return await _coachRepository.AddTraining(training, User.Identity.Name);
         }

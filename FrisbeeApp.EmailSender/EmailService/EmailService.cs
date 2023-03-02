@@ -25,11 +25,39 @@ namespace FrisbeeApp.EmailSender.EmailService
         }
         public bool SendEmail(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
         {
-            var emailMessage = CreateEmailMessage(message, emailTemplateType, model);
+            var emailMessage = CreateEmailConfirmationMessage(message, emailTemplateType, model);
             return Send(emailMessage);
         }
 
-        private MimeMessage CreateEmailMessage(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
+        public bool SendEmail(Message message, EmailTemplateType emailTemplateType, TrainingModel model)
+        {
+            var emailMessage = CreateTrainingMessage(message, emailTemplateType, model);
+            return Send(emailMessage);
+        }
+        private MimeMessage CreateTrainingMessage(Message message, EmailTemplateType emailTemplateType, TrainingModel model)
+        {
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
+            emailMessage.To.AddRange(message.To);
+            emailMessage.Subject = message.Subject;
+            if (emailTemplateType == EmailTemplateType.Training)
+            {
+                var pathToFile = Path.GetDirectoryName(Directory.GetCurrentDirectory())
+                + Path.DirectorySeparatorChar.ToString()
+                + "FrisbeeApp.EmailSender"
+                + Path.DirectorySeparatorChar.ToString()
+                + "EmailTemplates"
+                + Path.DirectorySeparatorChar.ToString()
+                + "AddTrainingTemplate.cshtml";
+
+                var body = _templateFiller.FillTemplate(pathToFile, model);
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = body };
+
+            }
+            return emailMessage;
+        }
+
+        private MimeMessage CreateEmailConfirmationMessage(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
@@ -76,36 +104,22 @@ namespace FrisbeeApp.EmailSender.EmailService
                 }
             }
         }
-        public void TemplateType(EmailTemplateType templateType, string email, ConfirmEmailModel model)
+        public void SendConfirmationEmail(EmailTemplateType templateType, string email, ConfirmEmailModel model)
         {
             var message = new Message(new string[] { email }, "FrisbeeApp Confirm Registration", "");
             if (templateType == EmailTemplateType.ConfirmAccountPlayer)
             {
                 SendEmail(message, EmailTemplateType.ConfirmAccountPlayer, model);
             }
-
         }
 
-        public async Task<bool> ConfirmAccount(string email, string userToken)
+        public void SendNewTrainingNotification(EmailTemplateType templateType, List<string> emailList, TrainingModel model)
         {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
-            if (dbUser != null && userToken != null && dbUser.EmailConfirmed != true)
+            var message = new Message(emailList, "FrisbeeApp Confirm Registration", "");
+            if (templateType == EmailTemplateType.Training)
             {
-                var result = await _userManager.ConfirmEmailAsync(dbUser, userToken);
-                return result == IdentityResult.Success ? true : false;
+                SendEmail(message, EmailTemplateType.Training, model);
             }
-            return false;
-        }
-
-        public async Task<string> GenerateRegistrationToken(string email)
-        {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
-            string token = null;
-            if (dbUser != null)
-            {
-                token = await _userManager.GenerateEmailConfirmationTokenAsync(dbUser);
-            }
-            return token;
         }
     }
 }

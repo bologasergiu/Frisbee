@@ -11,9 +11,12 @@ namespace FrisbeeApp.Controllers.Controllers
     public class EmailController : ControllerBase
     {
         private readonly IEmailService _emailServiceRepository;
-        public EmailController(IEmailService emailServiceRepository)
+        private readonly IAuthRepository _authRepository;
+        public EmailController(IEmailService emailServiceRepository, IAuthRepository authRepository)
         {
+
             _emailServiceRepository = emailServiceRepository;
+            _authRepository = authRepository;
         }
 
         [HttpGet]
@@ -23,7 +26,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var email = HttpUtility.UrlDecode(userEmail);
             var token = HttpUtility.UrlDecode(userToken);
-            return await _emailServiceRepository.ConfirmAccount(email, token);
+            return await _authRepository.ConfirmAccount(email, token);
         }
     }
 }
