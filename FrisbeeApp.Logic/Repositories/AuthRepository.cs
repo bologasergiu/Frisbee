@@ -37,7 +37,7 @@ namespace FrisbeeApp.Logic.Repositories
         public async Task<TokenDTO> Login(LoginDTO loginUser)
         {
             var registeredUser = await _userManager.FindByEmailAsync(loginUser.Email);
-            if (registeredUser == null)
+            if (registeredUser == null || registeredUser.EmailConfirmed != true)
             {
                 return null;
             }

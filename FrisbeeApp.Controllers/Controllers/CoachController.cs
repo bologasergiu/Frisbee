@@ -44,7 +44,7 @@ namespace FrisbeeApp.Controllers.Controllers
             {
                 Date = training.Date.ToString(),
                 Field = training.Field.ToString()
-            }); ;
+            }); 
 
             return await _coachRepository.AddTraining(training, User.Identity.Name);
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
@@ -17,13 +18,16 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IMapper _mapper;
         private readonly IPlayerRepository _playerRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailServiceRepository;
+        private List<string> coachesList;
 
 
-        public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository)
+        public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository, IEmailService emailServiceRepository)
         {
             _mapper = mapper;
             _playerRepository = playerRepository;
             _userRepository = userRepository;
+            _emailServiceRepository = emailServiceRepository;
         }
 
         [Authorize(Roles="Player")]
@@ -32,6 +36,13 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> AddTimeOffRequest(TimeOffRequestApiModel timeOffRequestApiModel)
         {
             var timeOffRequest = _mapper.Map<TimeOffRequest>(timeOffRequestApiModel);
+            var coachesList = _playerRepository.GetCochEmailList(User.Identity.Name);
+            _emailServiceRepository.SendTimeOffRequestEmail(EmailTemplateType.TimeOffRequest, await coachesList, new EmailSender.Common.TimeOffRequestModel
+            {
+                StartDate = timeOffRequestApiModel.StartDate,
+                EndDate = timeOffRequestApiModel.EndDate,
+                Type = timeOffRequestApiModel.RequestType.ToString()
+            });
 
             return await _playerRepository.AddTimeOffRequest(timeOffRequest, User.Identity.Name);
         }
