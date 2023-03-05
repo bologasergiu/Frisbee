@@ -5,7 +5,7 @@ namespace FrisbeeApp.EmailSender.Common
 {
     public class TemplateFillerService : ITemplateFillerService
     {
-        private IRazorEngine _razorEngine;
+        private readonly IRazorEngine _razorEngine;
 
         public TemplateFillerService(IRazorEngine razorEngine)
         {

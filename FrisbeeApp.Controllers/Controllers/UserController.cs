@@ -2,6 +2,7 @@
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.EmailSender.Abstractions;
+using FrisbeeApp.EmailSender.Common;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.DtoModels;
@@ -18,15 +19,15 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IMapper _mapper;
         private readonly IAuthRepository _authRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IEmailService _emailServiceRepository;
+        private readonly IEmailService _emailService;
 
 
-        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository, IEmailService emailServiceRepository)
+        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository, IEmailService emailService)
         {
             _mapper = mapper;
             _authRepository = repository;
             _userRepository = userRepository;
-            _emailServiceRepository = emailServiceRepository;
+            _emailService = emailService;
         }
 
         [AllowAnonymous]
@@ -39,7 +40,7 @@ namespace FrisbeeApp.Controllers.Controllers
             var registerResult = await _authRepository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
             var token = await _authRepository.GenerateRegistrationToken(registerUser.Email);
             var link = Url.Action("ConfirmEmail", "Email", new { userEmail = HttpUtility.UrlEncode(registerUser.Email), userToken = HttpUtility.UrlEncode(token) }, protocol: Request.Scheme);
-            _emailServiceRepository.SendConfirmationEmail(EmailTemplateType.ConfirmAccountPlayer, registerUser.Email, new EmailSender.Common.ConfirmEmailModel
+            _emailService.SendEmail(EmailTemplateType.ConfirmAccountPlayer, new List<string>{ registerUser.Email }, new EmailInfo
             {
                 FirstName = registerUser.FirstName,
                 LastName = registerUser.LastName,

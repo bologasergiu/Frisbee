@@ -19,8 +19,6 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IPlayerRepository _playerRepository;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailServiceRepository;
-        private List<string> coachesList;
-
 
         public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository, IEmailService emailServiceRepository)
         {
@@ -37,7 +35,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var timeOffRequest = _mapper.Map<TimeOffRequest>(timeOffRequestApiModel);
             var coachesList = _playerRepository.GetCochEmailList(User.Identity.Name);
-            _emailServiceRepository.SendTimeOffRequestEmail(EmailTemplateType.TimeOffRequest, await coachesList, new EmailSender.Common.TimeOffRequestModel
+            _emailServiceRepository.SendEmail(EmailTemplateType.TimeOffRequest, await coachesList, new EmailSender.Common.EmailInfo
             {
                 StartDate = timeOffRequestApiModel.StartDate,
                 EndDate = timeOffRequestApiModel.EndDate,

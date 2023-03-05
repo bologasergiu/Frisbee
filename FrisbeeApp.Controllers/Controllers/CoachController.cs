@@ -40,7 +40,7 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             var training = _mapper.Map<Training>(trainingApiModel);
             var teamList = await _coachRepository.GetTeamEmailList(User.Identity.Name);
-            _emailService.SendNewTrainingNotification(EmailTemplateType.Training, teamList, new EmailSender.Common.TrainingModel
+            _emailService.SendEmail(EmailTemplateType.Training, teamList, new EmailSender.Common.EmailInfo
             {
                 Date = training.Date.ToString(),
                 Field = training.Field.ToString()
@@ -62,6 +62,7 @@ namespace FrisbeeApp.Controllers.Controllers
         [HttpPut]
         public async Task<bool> ChangeTimeoffRequestStatus(Guid Id, RequestStatus status)
         { 
+
             return await _coachRepository.ChangeTimeoffRequestStatus(Id, status, User.Identity.Name);
         }
         

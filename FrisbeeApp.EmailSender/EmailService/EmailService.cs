@@ -4,7 +4,6 @@ using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.EmailSender.Common;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MimeKit;
 
 namespace FrisbeeApp.EmailSender.EmailService
@@ -23,50 +22,66 @@ namespace FrisbeeApp.EmailSender.EmailService
             _emailConfig = emailConfig;
             _templateFiller = templateFiller;
         }
-        public bool AccountConfirmationEmail(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
+        
+        public void SendEmail(EmailTemplateType templateType, List<string> emailList, EmailInfo model)
         {
-            var emailMessage = CreateEmailConfirmationMessage(message, emailTemplateType, model);
-            return Send(emailMessage);
-        }
+            Message message = new Message(emailList, null, null);
 
-        public bool TrainingEmail(Message message, EmailTemplateType emailTemplateType, TrainingModel model)
-        {
-            var emailMessage = CreateTrainingMessage(message, emailTemplateType, model);
-            return Send(emailMessage);
-        }
-        
-        public bool TimeOffRequestEmail(Message message, EmailTemplateType emailTemplateType, TimeOffRequestModel model)
-        {
-            var emailMessage = CreateTimeOffRequestMessage(message, emailTemplateType, model);
-            return Send(emailMessage);
-        }
-        
-        public void SendConfirmationEmail(EmailTemplateType templateType, string email, ConfirmEmailModel model)
-        {
-            var message = new Message(new string[] { email }, "FrisbeeApp Confirm Registration", "");
             if (templateType == EmailTemplateType.ConfirmAccountPlayer)
             {
-                AccountConfirmationEmail(message, EmailTemplateType.ConfirmAccountPlayer, model);
+                message.Subject = "FrisbeeApp Confirm Registration";
             }
+            else if (templateType == EmailTemplateType.Training)
+            {
+                message.Subject = "New frisbee training added.";
+            }
+            else if(templateType == EmailTemplateType.TimeOffRequest)
+            {
+                message.Subject = "New timeoff request";
+            }
+
+            var emailMessage = CreateMessage(message, templateType, model);
+            Send(emailMessage);
         }
 
-        public void SendNewTrainingNotification(EmailTemplateType templateType, List<string> emailList, TrainingModel model)
+        private MimeMessage CreateMessage(Message message, EmailTemplateType emailTemplateType, EmailInfo model)
         {
-            var message = new Message(emailList, "New Training added", "");
-            if (templateType == EmailTemplateType.Training)
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
+            emailMessage.To.AddRange(message.To);
+            emailMessage.Subject = message.Subject;
+
+            string pathToFile = Path.GetDirectoryName(Directory.GetCurrentDirectory())
+                + Path.DirectorySeparatorChar.ToString()
+                + "FrisbeeApp.EmailSender"
+                + Path.DirectorySeparatorChar.ToString()
+                + "EmailTemplates";
+
+            if (emailTemplateType == EmailTemplateType.Training)
             {
-                TrainingEmail(message, EmailTemplateType.Training, model);
+                pathToFile = pathToFile
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "AddTrainingTemplate.cshtml";
             }
-        }
-        
-        public async void SendTimeOffRequestEmail(EmailTemplateType templateType, List<string> emailList, TimeOffRequestModel model)
-        {
-            var message = new Message(emailList, "New Timeoff request added", "");
-            if (templateType == EmailTemplateType.TimeOffRequest)
+            else if (emailTemplateType == EmailTemplateType.ConfirmAccountPlayer)
             {
-                TimeOffRequestEmail(message,EmailTemplateType.TimeOffRequest, model);
+                pathToFile = pathToFile
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "ConfirmAccountTemplate.cshtml";           
             }
+            else if (emailTemplateType == EmailTemplateType.TimeOffRequest)
+            {
+                pathToFile = pathToFile
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "AddTimeOffRequestTemplate.cshtml";              
+            }
+
+            var body = _templateFiller.FillTemplate(pathToFile, model);
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = body };
+
+            return emailMessage;
         }
+
         private bool Send(MimeMessage mailMessage)
         {
             using (var client = new SmtpClient())
@@ -90,74 +105,6 @@ namespace FrisbeeApp.EmailSender.EmailService
                     client.Dispose();
                 }
             }
-        }
-        private MimeMessage CreateTrainingMessage(Message message, EmailTemplateType emailTemplateType, TrainingModel model)
-        {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
-            emailMessage.To.AddRange(message.To);
-            emailMessage.Subject = message.Subject;
-            if (emailTemplateType == EmailTemplateType.Training)
-            {
-                var pathToFile = Path.GetDirectoryName(Directory.GetCurrentDirectory())
-                + Path.DirectorySeparatorChar.ToString()
-                + "FrisbeeApp.EmailSender"
-                + Path.DirectorySeparatorChar.ToString()
-                + "EmailTemplates"
-                + Path.DirectorySeparatorChar.ToString()
-                + "AddTrainingTemplate.cshtml";
-
-                var body = _templateFiller.FillTemplate(pathToFile, model);
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = body };
-
-            }
-            return emailMessage;
-        }
-
-        private MimeMessage CreateTimeOffRequestMessage(Message message, EmailTemplateType emailTemplateType, TimeOffRequestModel model)
-        {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
-            emailMessage.To.AddRange(message.To);
-            emailMessage.Subject = message.Subject;
-            if (emailTemplateType == EmailTemplateType.TimeOffRequest)
-            {
-                var pathToFile = Path.GetDirectoryName(Directory.GetCurrentDirectory())
-                + Path.DirectorySeparatorChar.ToString()
-                + "FrisbeeApp.EmailSender"
-                + Path.DirectorySeparatorChar.ToString()
-                + "EmailTemplates"
-                + Path.DirectorySeparatorChar.ToString()
-                + "AddTimeOffRequestTemplate.cshtml";
-
-                var body = _templateFiller.FillTemplate(pathToFile, model);
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = body };
-
-            }
-            return emailMessage;
-        }
-
-        private MimeMessage CreateEmailConfirmationMessage(Message message, EmailTemplateType emailTemplateType, ConfirmEmailModel model)
-        {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
-            emailMessage.To.AddRange(message.To);
-            emailMessage.Subject = message.Subject;
-            if (emailTemplateType == EmailTemplateType.ConfirmAccountPlayer)
-            {
-                var pathToFile = Path.GetDirectoryName(Directory.GetCurrentDirectory())
-                + Path.DirectorySeparatorChar.ToString()
-                + "FrisbeeApp.EmailSender"
-                + Path.DirectorySeparatorChar.ToString()
-                + "EmailTemplates"
-                + Path.DirectorySeparatorChar.ToString()
-                + "ConfirmAccountTemplate.cshtml";
-
-                var body = _templateFiller.FillTemplate(pathToFile, model);
-                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = body };
-
-            }
-            return emailMessage;
         }
     }
 }
