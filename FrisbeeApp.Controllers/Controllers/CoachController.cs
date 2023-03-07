@@ -61,8 +61,13 @@ namespace FrisbeeApp.Controllers.Controllers
         [Route("change-timeoff-request-status")]
         [HttpPut]
         public async Task<bool> ChangeTimeoffRequestStatus(Guid Id, RequestStatus status)
-        { 
-
+        {
+            var plyerEmail = await _coachRepository.GetTimeOffRequestEmailAddress(Id);
+            _emailService.SendEmail(EmailTemplateType.TimeOffRequestChangeStatus, new List<string> { plyerEmail }, new EmailSender.Common.EmailInfo
+            {
+                RequestStatus = status.ToString(),
+                RequestId = Id.ToString(),
+            });
             return await _coachRepository.ChangeTimeoffRequestStatus(Id, status, User.Identity.Name);
         }
         

@@ -10,5 +10,6 @@ namespace FrisbeeApp.Logic.Abstractions
         Task<List<TimeOffRequest>> ViewAllTimeOffRequestsPerTeam(string teamName);
         Task<bool> ChangeTimeoffRequestStatus(Guid id, RequestStatus status, string email);
         Task<List<string>> GetTeamEmailList(string email);
+        Task<string> GetTimeOffRequestEmailAddress(Guid Id);
     }
 }

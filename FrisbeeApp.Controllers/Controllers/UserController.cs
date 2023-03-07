@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Frisbee.ApiModels;
+using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.EmailSender.Common;
@@ -8,6 +9,8 @@ using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using System.Web;
 
 namespace FrisbeeApp.Controllers.Controllers
@@ -20,14 +23,18 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IAuthRepository _authRepository;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
+        private readonly IPlayerRepository _playerRepository;
+        private readonly FrisbeeAppContext _context;
 
 
-        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository, IEmailService emailService)
+        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository, IEmailService emailService,IPlayerRepository playerRepository, FrisbeeAppContext context)
         {
             _mapper = mapper;
             _authRepository = repository;
             _userRepository = userRepository;
             _emailService = emailService;
+            _playerRepository = playerRepository;
+            _context = context;
         }
 
         [AllowAnonymous]
@@ -36,16 +43,40 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> Register(RegisterApiModel registerApiModel)
         {
             var registerUser = _mapper.Map<User>(registerApiModel);
-            
             var registerResult = await _authRepository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
             var token = await _authRepository.GenerateRegistrationToken(registerUser.Email);
             var link = Url.Action("ConfirmEmail", "Email", new { userEmail = HttpUtility.UrlEncode(registerUser.Email), userToken = HttpUtility.UrlEncode(token) }, protocol: Request.Scheme);
-            _emailService.SendEmail(EmailTemplateType.ConfirmAccountPlayer, new List<string>{ registerUser.Email }, new EmailInfo
+            _emailService.SendEmail(EmailTemplateType.ConfirmAccountPlayer, new List<string> { registerUser.Email }, new EmailInfo
             {
                 FirstName = registerUser.FirstName,
                 LastName = registerUser.LastName,
                 Link = link
             });
+
+            var role = await _authRepository.GetRole(registerUser.Email);
+            string coachEmail = await _playerRepository.GetCoachEmail(registerUser.Email); 
+            var coachUser = await _context.Users.FirstOrDefaultAsync(x=>x.Email == coachEmail);
+            if (role == ChosenRole.Player.ToString())
+            {
+                _emailService.SendEmail(EmailTemplateType.ApproveAccount, new List<string> { coachEmail }, new EmailInfo
+                {
+                    FirstName = registerUser.FirstName,
+                    LastName = registerUser.LastName,
+                    Responsable = coachUser.FirstName,
+                    UserType = ChosenRole.Player.ToString(),
+                });
+
+            } else
+            {
+                _emailService.SendEmail(EmailTemplateType.ApproveAccount, new List<string> { "bologasergiu22@gmail.com" }, new EmailInfo
+                {
+                    FirstName = registerUser.FirstName,
+                    LastName = registerUser.LastName,
+                    Responsable = "Sergiu",
+                    UserType = ChosenRole.Coach.ToString(),
+                }); ;
+            }
+            
             return registerResult;
         }
 

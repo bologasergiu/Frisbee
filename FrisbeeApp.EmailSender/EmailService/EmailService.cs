@@ -39,6 +39,14 @@ namespace FrisbeeApp.EmailSender.EmailService
             {
                 message.Subject = "New timeoff request";
             }
+            else if (templateType == EmailTemplateType.ApproveAccount)
+            {
+                message.Subject = "New user registration";
+            }
+            else if (templateType == EmailTemplateType.TimeOffRequestChangeStatus)
+            {
+                message.Subject = "Timeoff request status updated";
+            }
 
             var emailMessage = CreateMessage(message, templateType, model);
             Send(emailMessage);
@@ -74,6 +82,16 @@ namespace FrisbeeApp.EmailSender.EmailService
                 pathToFile = pathToFile
                     + Path.DirectorySeparatorChar.ToString()
                     + "AddTimeOffRequestTemplate.cshtml";              
+            }else if (emailTemplateType == EmailTemplateType.ApproveAccount)
+            {
+                pathToFile = pathToFile
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "ApproveAccountTemplate.cshtml";
+            }else if (emailTemplateType == EmailTemplateType.TimeOffRequestChangeStatus)
+            {
+                pathToFile = pathToFile
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "TimeOffRequestChangeStatusTemplate.cshtml";
             }
 
             var body = _templateFiller.FillTemplate(pathToFile, model);

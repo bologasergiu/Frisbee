@@ -10,5 +10,9 @@
         public string? Type { get; set; }
         public string? Date { get; set; }
         public string? Field { get; set; }
+        public string? Responsable { get; set; }
+        public string? UserType { get; set; }
+        public string? RequestStatus { get; set; }
+        public string? RequestId{ get; set; }
     }
 }

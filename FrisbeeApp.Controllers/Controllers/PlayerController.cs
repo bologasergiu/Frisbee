@@ -34,8 +34,8 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> AddTimeOffRequest(TimeOffRequestApiModel timeOffRequestApiModel)
         {
             var timeOffRequest = _mapper.Map<TimeOffRequest>(timeOffRequestApiModel);
-            var coachesList = _playerRepository.GetCochEmailList(User.Identity.Name);
-            _emailServiceRepository.SendEmail(EmailTemplateType.TimeOffRequest, await coachesList, new EmailSender.Common.EmailInfo
+            var coachesList = await _playerRepository.GetCoachEmail(User.Identity.Name);
+            _emailServiceRepository.SendEmail(EmailTemplateType.TimeOffRequest, new List<string> { coachesList }, new EmailSender.Common.EmailInfo
             {
                 StartDate = timeOffRequestApiModel.StartDate,
                 EndDate = timeOffRequestApiModel.EndDate,

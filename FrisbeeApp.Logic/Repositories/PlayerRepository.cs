@@ -61,22 +61,23 @@ namespace FrisbeeApp.Logic.Repositories
             return timeOffRequests;
         }
 
-        public async Task<List<string>> GetCochEmailList(string email)
+
+        public async Task<string> GetCoachEmail(string email)
         {
             var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
             var teamName = dbUser.Team;
-            var teamMembers = await _context.Users.Where(x=> x.Team == teamName).ToListAsync();
-            List<string> list = new List<string>();
+            var teamMembers = await _context.Users.Where(x => x.Team == teamName).ToListAsync();
+            string result = "";
             foreach (var teamMember in teamMembers)
             {
                 var role = await _authRepository.GetRole(teamMember.Email);
                 if (role == ChosenRole.Coach.ToString())
                 {
                     var userEmail = teamMember.Email.ToString();
-                    list.Add(userEmail);
+                    result = userEmail;
                 }
             }
-            return list;
+            return result;
         }
     }
 }

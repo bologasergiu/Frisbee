@@ -90,5 +90,11 @@ namespace FrisbeeApp.Logic.Repositories
 
             return result;
         }
+
+        public async Task<string> GetTimeOffRequestEmailAddress(Guid Id)
+        {
+            var dbRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id);
+            return dbRequest.UserEmail;
+        }
     }
 }
