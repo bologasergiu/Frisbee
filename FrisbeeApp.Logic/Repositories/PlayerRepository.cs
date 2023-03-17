@@ -1,19 +1,21 @@
 ﻿using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
+using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace FrisbeeApp.Logic.Repositories
 {
     public class PlayerRepository : IPlayerRepository
     {
         private readonly FrisbeeAppContext _context;
+        private readonly IAuthRepository _authRepository;
 
-        public PlayerRepository(FrisbeeAppContext context)
+        public PlayerRepository(FrisbeeAppContext context, IAuthRepository authRepository)
         {
             _context = context;
+            _authRepository = authRepository;
         }
 
         public async Task<bool> AddTimeOffRequest(TimeOffRequest timeOffRequest, string email)
@@ -54,6 +56,24 @@ namespace FrisbeeApp.Logic.Repositories
             var timeOffRequests = await _context.TimeOffRequests.Where(x=>x.UserEmail== email).ToListAsync();
 
             return timeOffRequests;
+        }
+
+        public async Task<string> GetCoachEmail(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            var teamName = dbUser.Team;
+            var teamMembers = await _context.Users.Where(x => x.Team == teamName).ToListAsync();
+            string result = "";
+            foreach (var teamMember in teamMembers)
+            {
+                var role = await _authRepository.GetRole(teamMember.Email);
+                if (role == ChosenRole.Coach.ToString())
+                {
+                    var userEmail = teamMember.Email.ToString();
+                    result = userEmail;
+                }
+            }
+            return result;
         }
     }
 }

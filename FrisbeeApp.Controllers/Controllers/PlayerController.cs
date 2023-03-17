@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Frisbee.ApiModels;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
+using FrisbeeApp.Logic.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,13 +19,17 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IMapper _mapper;
         private readonly IPlayerRepository _playerRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailServiceRepository;
+        private readonly IQuizRepository _quizRepository;
 
 
-        public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository)
+        public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository, IEmailService emailServiceRepository, IQuizRepository quizRepository)
         {
             _mapper = mapper;
             _playerRepository = playerRepository;
             _userRepository = userRepository;
+            _emailServiceRepository = emailServiceRepository;
+            _quizRepository = quizRepository;
         }
 
         [Authorize(Roles="Player")]
@@ -32,6 +38,13 @@ namespace FrisbeeApp.Controllers.Controllers
         public async Task<bool> AddTimeOffRequest(TimeOffRequestApiModel timeOffRequestApiModel)
         {
             var timeOffRequest = _mapper.Map<TimeOffRequest>(timeOffRequestApiModel);
+            var coachesList = await _playerRepository.GetCoachEmail(User.Identity.Name);
+            _emailServiceRepository.SendEmail(EmailTemplateType.TimeOffRequest, new List<string> { coachesList }, new EmailSender.Common.EmailInfo
+            {
+                StartDate = timeOffRequestApiModel.StartDate,
+                EndDate = timeOffRequestApiModel.EndDate,
+                Type = timeOffRequestApiModel.RequestType.ToString()
+            });
 
             return await _playerRepository.AddTimeOffRequest(timeOffRequest, User.Identity.Name);
         }
@@ -62,6 +75,15 @@ namespace FrisbeeApp.Controllers.Controllers
             var timeOffRequestsList = await _userRepository.ViewFilteredRequests(User.Identity.Name, searchCriteria);
 
             return _mapper.Map<List<TimeOffRequestPlayerDTO>>(timeOffRequestsList);
+        }
+
+        [Authorize(Roles = "Player")]
+        [Route("get-quiz-questions")]
+        [HttpGet]
+        public async Task<List<QuestionDTO>> GetQuizQuestions()
+        {
+
+            return await _quizRepository.GetQuizQuestions();
         }
     }
 }

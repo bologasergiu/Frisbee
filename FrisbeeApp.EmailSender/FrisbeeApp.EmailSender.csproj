@@ -7,15 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.10.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
+    <PackageReference Include="RazorEngineCore" Version="2022.8.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Frisbee.ApiModels\Frisbee.ApiModels.csproj" />
     <ProjectReference Include="..\FrisbeeApp.Context\FrisbeeApp.Context.csproj" />
     <ProjectReference Include="..\FrisbeeApp.DatabaseModels\FrisbeeApp.DatabaseModels.csproj" />
-    <ProjectReference Include="..\FrisbeeApp.EmailSender\FrisbeeApp.EmailSender.csproj" />
   </ItemGroup>
+
 </Project>

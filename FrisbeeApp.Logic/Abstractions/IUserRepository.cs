@@ -1,6 +1,7 @@
 ﻿using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
+using Microsoft.AspNetCore.Http;
 
 namespace FrisbeeApp.Logic.Abstractions
 {
@@ -10,5 +11,6 @@ namespace FrisbeeApp.Logic.Abstractions
         Task<bool> UpdateUser(Guid Id, User user);
         Task<bool> UpdateTeam(Guid Id, string team);
         Task<List<TimeOffRequest>> ViewFilteredRequests(string email, SearchCriteria searchCriterea);
+        Task<bool> UpdateProfilePicture(string email, IFormFile picture);
     }
 }

@@ -1,6 +1,9 @@
 using FrisbeeApp.Context;
 using FrisbeeApp.Controllers.Mappers;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender.Abstractions;
+using FrisbeeApp.EmailSender.Common;
+using FrisbeeApp.EmailSender.EmailService;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Repositories;
@@ -11,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RazorEngineCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,7 +61,19 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+builder.Services.AddTransient<IRazorEngine, RazorEngine>();
+builder.Services.AddTransient<ITemplateFillerService, TemplateFillerService>();
+
 builder.Services.AddAutoMapper(typeof(LoginApiModelProfile));
+builder.Services.AddAutoMapper(typeof(QuestionApiModelProfile));
+//Email Configuration
+var emailConfig = builder.Configuration
+        .GetSection("EmailConfiguration")
+        .Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

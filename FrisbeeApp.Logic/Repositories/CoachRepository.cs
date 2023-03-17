@@ -5,14 +5,14 @@ using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
-
+using System.Collections;
 
 namespace FrisbeeApp.Logic.Repositories
 {
     public class CoachRepository : ICoachRepository
     {
         private readonly FrisbeeAppContext _context;
-
+        
         public CoachRepository(FrisbeeAppContext context)
         {
             _context = context;
@@ -76,6 +76,25 @@ namespace FrisbeeApp.Logic.Repositories
                 return true;
             }
             throw new Exception("Can't modify requests for players from other teams.");
+        }
+
+        public async Task<List<string>> GetTeamEmailList(string email)
+        {
+            var coach = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (coach == null || _context == null)
+            {
+                return new List<string>();
+            }
+            var coachTeam = coach.Team;
+            var result = _context.Users.Where(x=> x.Team == coachTeam).Select(x=>x.Email).ToList();
+
+            return result;
+        }
+
+        public async Task<string> GetTimeOffRequestEmailAddress(Guid Id)
+        {
+            var dbRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id);
+            return dbRequest.UserEmail;
         }
     }
 }

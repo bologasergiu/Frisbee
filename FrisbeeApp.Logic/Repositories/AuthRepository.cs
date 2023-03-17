@@ -1,5 +1,7 @@
 ﻿using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
+using FrisbeeApp.EmailSender.Abstractions;
+using FrisbeeApp.EmailSender.Common;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Common;
@@ -10,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
+
 namespace FrisbeeApp.Logic.Repositories
 {
     public class AuthRepository : IAuthRepository
@@ -19,20 +22,22 @@ namespace FrisbeeApp.Logic.Repositories
         private readonly IConfiguration _config;
         private readonly ITokenService _tokenService;
         private readonly FrisbeeAppContext _context;
+        private readonly IEmailService _emailService;
 
-        public AuthRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, ITokenService tokenService, FrisbeeAppContext context)
+        public AuthRepository(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, ITokenService tokenService, FrisbeeAppContext context, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _config = config;
             _tokenService = tokenService;
             _context = context;
+            _emailService = emailService;
         }
 
         public async Task<TokenDTO> Login(LoginDTO loginUser)
         {
             var registeredUser = await _userManager.FindByEmailAsync(loginUser.Email);
-            if (registeredUser == null)
+            if (registeredUser == null || registeredUser.EmailConfirmed != true)
             {
                 return null;
             }
@@ -60,7 +65,9 @@ namespace FrisbeeApp.Logic.Repositories
             var isUserRegistered = (await _userManager.CreateAsync(user, password)).Succeeded;
             var isUserAssignedRole = (await _userManager.AddToRoleAsync(user, role.ToString())).Succeeded;
 
-            return isUserRegistered && isUserAssignedRole;
+            var result = isUserRegistered && isUserAssignedRole;
+            
+            return result;
         }
 
         public async Task<string> GetRole(string email)
@@ -115,6 +122,27 @@ namespace FrisbeeApp.Logic.Repositories
             }
 
             return await _context.SaveChangesAsync() == 1;
+        }
+
+        public async Task<string> GenerateRegistrationToken(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            string token = null;
+            if(dbUser != null)
+            {
+                token = await _userManager.GenerateEmailConfirmationTokenAsync(dbUser);
+            }
+            return token;
+        }
+        public async Task<bool> ConfirmAccount(string email, string userToken)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (dbUser != null && userToken != null && dbUser.EmailConfirmed != true)
+            {
+                var result = await _userManager.ConfirmEmailAsync(dbUser, userToken);
+                return result == IdentityResult.Success ? true : false;
+            }
+            return false;
         }
     }
 }
