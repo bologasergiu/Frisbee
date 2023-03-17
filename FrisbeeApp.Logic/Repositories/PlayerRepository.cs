@@ -2,11 +2,8 @@
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
-using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-
 
 namespace FrisbeeApp.Logic.Repositories
 {
@@ -60,7 +57,6 @@ namespace FrisbeeApp.Logic.Repositories
 
             return timeOffRequests;
         }
-
 
         public async Task<string> GetCoachEmail(string email)
         {

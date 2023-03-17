@@ -62,10 +62,12 @@ builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
 builder.Services.AddTransient<IRazorEngine, RazorEngine>();
 builder.Services.AddTransient<ITemplateFillerService, TemplateFillerService>();
 
 builder.Services.AddAutoMapper(typeof(LoginApiModelProfile));
+builder.Services.AddAutoMapper(typeof(QuestionApiModelProfile));
 //Email Configuration
 var emailConfig = builder.Configuration
         .GetSection("EmailConfiguration")

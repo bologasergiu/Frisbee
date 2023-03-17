@@ -5,6 +5,7 @@ using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
+using FrisbeeApp.Logic.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,13 +20,16 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IPlayerRepository _playerRepository;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailServiceRepository;
+        private readonly IQuizRepository _quizRepository;
 
-        public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository, IEmailService emailServiceRepository)
+
+        public PlayerController(IMapper mapper, IPlayerRepository playerRepository, IUserRepository userRepository, IEmailService emailServiceRepository, IQuizRepository quizRepository)
         {
             _mapper = mapper;
             _playerRepository = playerRepository;
             _userRepository = userRepository;
             _emailServiceRepository = emailServiceRepository;
+            _quizRepository = quizRepository;
         }
 
         [Authorize(Roles="Player")]
@@ -71,6 +75,14 @@ namespace FrisbeeApp.Controllers.Controllers
             var timeOffRequestsList = await _userRepository.ViewFilteredRequests(User.Identity.Name, searchCriteria);
 
             return _mapper.Map<List<TimeOffRequestPlayerDTO>>(timeOffRequestsList);
+        }
+
+        [HttpGet]
+        [Route("get-quiz-questions")]
+        public async Task<List<QuestionDTO>> GetQuizQuestions()
+        {
+
+            return await _quizRepository.GetQuizQuestions();
         }
     }
 }
