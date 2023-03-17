@@ -77,8 +77,9 @@ namespace FrisbeeApp.Controllers.Controllers
             return _mapper.Map<List<TimeOffRequestPlayerDTO>>(timeOffRequestsList);
         }
 
-        [HttpGet]
+        [Authorize(Roles = "Player")]
         [Route("get-quiz-questions")]
+        [HttpGet]
         public async Task<List<QuestionDTO>> GetQuizQuestions()
         {
 

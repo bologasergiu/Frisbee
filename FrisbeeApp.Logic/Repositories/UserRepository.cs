@@ -7,6 +7,7 @@ using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace FrisbeeApp.Logic.Repositories
@@ -120,6 +121,31 @@ namespace FrisbeeApp.Logic.Repositories
             }
 
             return await timeoffRequests.ToListAsync();
+        }
+
+        public async Task<bool> UpdateProfilePicture(string email, IFormFile picture)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (picture.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await picture.CopyToAsync(memoryStream);
+
+                    // Upload the file if less than 2 MB  
+                    if (memoryStream.Length < 2097152)
+                    {
+                        dbUser.PictureSource = memoryStream.ToArray();
+                        _context.Users.Update(dbUser);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    return await _context.SaveChangesAsync() > 0;
+                }
+            }
+            return false;
         }
     }
 }

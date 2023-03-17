@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FrisbeeApp.Context.Migrations
 {
     [DbContext(typeof(FrisbeeAppContext))]
-    [Migration("20230317112011_Questions")]
-    partial class Questions
+    [Migration("20230317143344_ProfilePicture")]
+    partial class ProfilePicture
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -236,6 +236,9 @@ namespace FrisbeeApp.Context.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<byte[]>("PictureSource")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

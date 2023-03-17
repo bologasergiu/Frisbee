@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Frisbee.ApiModels;
-using FrisbeeApp.DatabaseModels.Models;
+﻿using Frisbee.ApiModels;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
@@ -14,13 +12,11 @@ namespace FrisbeeApp.Controllers.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminRepository _adminRepository;
-        private readonly IMapper _mapper;
         private readonly IQuizRepository _quizRepository;
 
-        public AdminController(IAdminRepository adminRepository, IMapper mapper, IQuizRepository quizRepository)
+        public AdminController(IAdminRepository adminRepository, IQuizRepository quizRepository)
         {
             _adminRepository = adminRepository;
-            _mapper = mapper;
             _quizRepository = quizRepository;
         }
 
@@ -38,11 +34,10 @@ namespace FrisbeeApp.Controllers.Controllers
             return await _adminRepository.DeleteUser(Id);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("add-question")]
         public async Task<bool> AddQuestion(QuestionApiModel questionApiModel)
-        {
-           
+        {  
             return await _quizRepository.AddQuestion(questionApiModel);
         }
 
@@ -50,7 +45,6 @@ namespace FrisbeeApp.Controllers.Controllers
         [Route("delete-question")]
         public async Task<bool> DeleteQuestion(Guid Id)
         {
-
             return await _quizRepository.DeleteQuestion(Id);
         }
 
@@ -58,7 +52,6 @@ namespace FrisbeeApp.Controllers.Controllers
         [Route("get-questions")]
         public async Task<List<QuestionDTO>> GetQuestions()
         {
-
             return await _quizRepository.GetQuestions();
         }
 

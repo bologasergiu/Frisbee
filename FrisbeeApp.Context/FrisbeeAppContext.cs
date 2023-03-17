@@ -8,12 +8,9 @@ namespace FrisbeeApp.Context
     public class FrisbeeAppContext : IdentityDbContext<User,Role,Guid>
     {
         public FrisbeeAppContext(DbContextOptions<FrisbeeAppContext> options) : base(options)  { }
-
         public DbSet<Team> Teams { get; set; }
-
         public DbSet<Training> Trainings { get; set; }
         public DbSet<TimeOffRequest> TimeOffRequests{ get; set; }
-
         public DbSet<Question> QuizQuestions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

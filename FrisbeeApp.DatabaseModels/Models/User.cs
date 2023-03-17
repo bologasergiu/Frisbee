@@ -11,6 +11,7 @@ namespace FrisbeeApp.DatabaseModels.Models
         public string Team { get; set; }
         public bool Certified { get; set; }
         public bool AccountApproved { get; set; }
+        public byte[]? PictureSource { get; set; }
 
     }
 }
