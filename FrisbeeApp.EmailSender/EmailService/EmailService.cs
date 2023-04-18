@@ -55,7 +55,7 @@ namespace FrisbeeApp.EmailSender.EmailService
         private MimeMessage CreateMessage(Message message, EmailTemplateType emailTemplateType, EmailInfo model)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("bologasergiu22@gmail.com", "bologasergiu22@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress("adm.frisbee.app@gmail.com", "adm.frisbee.app@gmail.com"));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 

@@ -31,6 +31,13 @@ builder.Services.AddIdentity<User, Role>(options=>
 	                                    })
     .AddEntityFrameworkStores<FrisbeeAppContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddCors((setup) =>
+{
+    setup.AddPolicy("default", (options) =>
+    {
+        options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    });
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -119,6 +126,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("default");
 app.UseAuthentication();
 
 app.UseAuthorization();
