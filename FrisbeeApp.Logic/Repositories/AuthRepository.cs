@@ -1,4 +1,5 @@
-﻿using FrisbeeApp.Context;
+﻿using Frisbee.ApiModels;
+using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.EmailSender.Common;
@@ -104,23 +105,13 @@ namespace FrisbeeApp.Logic.Repositories
             var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == id) ?? throw new EntityNotFoundException("UserId does not exist.");
             var dbRole = await GetRole(dbUser.Email);
             var currentUserRole = await GetRole(email);
-            if (currentUserRole == ChosenRole.Coach.ToString())
+            if (currentUserRole == ChosenRole.Coach.ToString() || currentUserRole == ChosenRole.Admin.ToString())
             {
-                if (dbRole == ChosenRole.Player.ToString())
-                {
-                    dbUser.AccountApproved = true;
-                    _context.Users.Update(dbUser);
-                }
-            }
-            else if(currentUserRole == ChosenRole.Admin.ToString())
-            {
-                if (dbRole == ChosenRole.Coach.ToString())
-                {
-                    dbUser.AccountApproved = true;
-                    _context.Users.Update(dbUser);
-                }
-            }
+                dbUser.AccountApproved = true;
+                _context.Users.Update(dbUser);
 
+            }
+           
             return await _context.SaveChangesAsync() == 1;
         }
 
@@ -134,6 +125,7 @@ namespace FrisbeeApp.Logic.Repositories
             }
             return token;
         }
+
         public async Task<bool> ConfirmAccount(string email, string userToken)
         {
             var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
@@ -144,5 +136,17 @@ namespace FrisbeeApp.Logic.Repositories
             }
             return false;
         }
+
+        public async Task<string> GenerateConfirmNewPasswordToken(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            string token = null;
+            if (dbUser != null)
+            {
+                token = await _userManager.GeneratePasswordResetTokenAsync(dbUser);
+            }
+            return token;
+        }
     }
 }
+

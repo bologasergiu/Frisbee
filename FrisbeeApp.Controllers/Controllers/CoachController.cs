@@ -50,8 +50,8 @@ namespace FrisbeeApp.Controllers.Controllers
         }
 
         [Authorize(Roles = "Coach")]
-        [Route("view-all-timeoff-requests-per-team")]
-        [HttpPost]
+        [Route("requests-per-team")]
+        [HttpGet]
         public async Task<List<TimeOffRequest>> ViewAllTimeoffRequestPerTeam()
         {
             return await _coachRepository.ViewAllTimeOffRequestsPerTeam(User.Identity.Name);

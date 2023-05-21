@@ -1,4 +1,5 @@
-﻿using FrisbeeApp.DatabaseModels.Models;
+﻿using Frisbee.ApiModels;
+using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.EmailSender.Common;
 using FrisbeeApp.Logic.DtoModels;
 
@@ -13,5 +14,7 @@ namespace FrisbeeApp.Logic.Abstractisations
         Task<bool> ApproveAccount(Guid id, string email);
         Task<bool> ConfirmAccount(string email, string userToken);
         Task<string> GenerateRegistrationToken (string email);
+        Task<string> GenerateConfirmNewPasswordToken(string email);
+
     }
 }

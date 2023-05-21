@@ -28,5 +28,15 @@ namespace FrisbeeApp.Controllers.Controllers
             var token = HttpUtility.UrlDecode(userToken);
             return await _authRepository.ConfirmAccount(email, token);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("ConfirmNewPassword/{userEmail}/{userToken}")]
+        public async Task<bool> ConfirmNewPassword(string userEmail, string userToken)
+        {
+            var email = HttpUtility.UrlDecode(userEmail);
+            var token = HttpUtility.UrlDecode(userToken);
+            return await _authRepository.ConfirmAccount(email, token);
+        }
     }
 }
