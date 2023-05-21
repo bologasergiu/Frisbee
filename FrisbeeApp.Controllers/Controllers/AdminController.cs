@@ -1,4 +1,5 @@
 ﻿using Frisbee.ApiModels;
+using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
@@ -21,23 +22,23 @@ namespace FrisbeeApp.Controllers.Controllers
         }
 
         [HttpPost]
-        [Route("create-team")]
-        public async Task<bool> CreateTeam(string teamName)
+        [Route("add-team/{teamName}")]
+        public async Task<bool> AddTeam(string teamName)
         {
             return await _adminRepository.CreateTeam(teamName);
         }
 
         [HttpPut]
-        [Route("delete-user")]
-        public async Task<bool> DeleteUser(Guid Id)
+        [Route("delete-user/{email}")]
+        public async Task<bool> DeleteUser(string email)
         {
-            return await _adminRepository.DeleteUser(Id);
+            return await _adminRepository.DeleteUser(email);
         }
 
         [HttpPost]
         [Route("add-question")]
         public async Task<bool> AddQuestion(QuestionApiModel questionApiModel)
-        {  
+        {
             return await _quizRepository.AddQuestion(questionApiModel);
         }
 
@@ -55,5 +56,38 @@ namespace FrisbeeApp.Controllers.Controllers
             return await _quizRepository.GetQuestions();
         }
 
+        [HttpPut]
+        [Route("delete-team/{name}")]
+        public async Task<bool> DeleteTeam(string name)
+        {
+            return await _adminRepository.DeleteTeam(name);
+        }
+
+        [HttpGet]
+        [Route("get-all-teams")]
+        public async Task<List<TeamModelDTO>> GetAllTeams()
+        {
+            List<TeamModelDTO> teams = new List<TeamModelDTO>();
+            teams = await _adminRepository.GetAllTeams();
+            return teams;
+        }
+
+        [HttpGet]
+        [Route("get-all-users")]
+        public async Task<List<TeamMemberDTO>> GetAllUsers()
+        {
+            List<TeamMemberDTO> users = new List<TeamMemberDTO>();
+            users = await _adminRepository.GetAllUsers();
+            return users;
+        }
+
+        [HttpGet]
+        [Route("get-team")]
+        public async Task<TeamModelDTO> GetTeam(string teamName)
+        {
+            return await _adminRepository.GetTeamModel(teamName);
+        }
+
     }
+   
 }

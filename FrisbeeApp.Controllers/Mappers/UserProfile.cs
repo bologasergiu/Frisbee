@@ -9,7 +9,9 @@ namespace FrisbeeApp.Controllers.Mappers
     {
         public UserProfile() 
         {
-            CreateMap<User, TeamMemberDTO>();
+            CreateMap<User, TeamMemberDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => (Gender)src.Gender));
             CreateMap<UpdateUserApiModel, User>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));           
         }
     }

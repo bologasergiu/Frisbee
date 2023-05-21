@@ -9,8 +9,10 @@ using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.DtoModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Web;
 
 namespace FrisbeeApp.Controllers.Controllers
@@ -25,9 +27,10 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IEmailService _emailService;
         private readonly IPlayerRepository _playerRepository;
         private readonly FrisbeeAppContext _context;
+        private readonly UserManager<User> _userManager;
 
 
-        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository, IEmailService emailService, IPlayerRepository playerRepository, FrisbeeAppContext context)
+        public UserController(IMapper mapper, IAuthRepository repository, IUserRepository userRepository, IEmailService emailService, IPlayerRepository playerRepository, FrisbeeAppContext context, UserManager<User> userManager)
         {
             _mapper = mapper;
             _authRepository = repository;
@@ -35,17 +38,18 @@ namespace FrisbeeApp.Controllers.Controllers
             _emailService = emailService;
             _playerRepository = playerRepository;
             _context = context;
+            _userManager = userManager;
         }
 
         [AllowAnonymous]
         [Route("register")]
         [HttpPost]
-        public async Task<bool> Register([FromQuery] RegisterApiModel registerApiModel)
+        public async Task<bool> Register(RegisterApiModel registerApiModel)
         {
             var registerUser = _mapper.Map<User>(registerApiModel);
             var registerResult = await _authRepository.Register(registerUser, registerApiModel.Password, registerApiModel.Role);
             var token = await _authRepository.GenerateRegistrationToken(registerUser.Email);
-            var link = Url.Action("ConfirmEmail", "Email", new { userEmail = HttpUtility.UrlEncode(registerUser.Email), userToken = HttpUtility.UrlEncode(token) }, protocol: Request.Scheme);
+            var link = Url.Action("ConfirmEmail", "Email", new { userEmail = HttpUtility.UrlEncode(registerUser.Email), userToken = HttpUtility.UrlEncode(token), returnUrl = "http://localhost:4200/login" }, protocol: Request.Scheme);
 
             _emailService.SendEmail(EmailTemplateType.ConfirmAccountPlayer, new List<string> { registerUser.Email }, new EmailInfo
             {
@@ -55,6 +59,7 @@ namespace FrisbeeApp.Controllers.Controllers
             });
 
             var role = await _authRepository.GetRole(registerUser.Email);
+
             string coachEmail = await _playerRepository.GetCoachEmail(registerUser.Email);
             var coachUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == coachEmail);
             if (role == ChosenRole.Player.ToString())
@@ -100,7 +105,7 @@ namespace FrisbeeApp.Controllers.Controllers
         }
 
         [Authorize(Roles = "Coach, Admin")]
-        [Route("approve-account")]
+        [Route("approve-account/{id}")]
         [HttpPut]
         public async Task<bool> ApproveAccount(Guid id)
         {
@@ -108,20 +113,20 @@ namespace FrisbeeApp.Controllers.Controllers
         }
 
         [Authorize]
-        [Route("view-team")]
+        [Route("view-team/{teamName}")]
         [HttpGet]
         public async Task<List<TeamMemberDTO>> ViewTeam(string teamName)
         {
             return await _userRepository.ViewTeam(teamName);
         }
-
+            
         [Authorize]
-        [Route("update-user")]
+        [Route("update-user/{email}")]
         [HttpPut]
-        public async Task<bool> UpdateUser(Guid Id, UpdateUserApiModel updateUserApiModel)
+        public async Task<bool> UpdateUser(string email, UpdateUserApiModel updateUserApiModel)
         {
             var user = _mapper.Map<User>(updateUserApiModel);
-            return await _userRepository.UpdateUser(Id, user);
+            return await _userRepository.UpdateUser(email, user);
         }
 
         [Authorize(Roles = "Admin, Coach")]
@@ -139,5 +144,44 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             return await _userRepository.UpdateProfilePicture(email, picture);
         }
+
+        [Authorize]
+        [Route("user-info/{email}")]
+        [HttpGet]
+        public async Task<TeamMemberDTO> GetUserDetails()
+        {
+            return await _userRepository.GetUserDetails(User.Identity.Name);
+        }
+
+        [Authorize]
+        [Route("confirmEmail/{email}")]
+        [HttpPut]
+        public async Task<bool> ConfirmEmail(string email)
+        {
+            return await _userRepository.ConfirmEmail(email);
+        }
+
+        [Authorize]
+        [Route("change-password/")]
+        [HttpPut]
+        public async Task<bool> ChangePassword(ChangePasswordApiModel model)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var token = await _authRepository.GenerateConfirmNewPasswordToken(model.Email);
+            var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+
+            if (!result.Succeeded)
+            {
+                return false;
+            }
+            return true;
+        }
+
     };
 }
+       

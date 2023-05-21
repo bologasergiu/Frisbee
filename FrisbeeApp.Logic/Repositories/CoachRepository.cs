@@ -36,7 +36,7 @@ namespace FrisbeeApp.Logic.Repositories
         public async Task<List<TimeOffRequest>> ViewAllTimeOffRequestsPerTeam(string email)
         {
             var existingUser = await _context.Users.FirstOrDefaultAsync(x => x.Email== email) ?? throw new EntityNotFoundException("Team ID not found!");
-            var timeoffRequests = await _context.TimeOffRequests.Where(x => x.TeamName == existingUser.Team && x.Status==RequestStatus.Pending).ToListAsync();
+            var timeoffRequests = await _context.TimeOffRequests.Where(x => x.TeamName == existingUser.Team).ToListAsync();
 
             return timeoffRequests;
         }

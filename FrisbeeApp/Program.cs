@@ -75,6 +75,8 @@ builder.Services.AddTransient<ITemplateFillerService, TemplateFillerService>();
 
 builder.Services.AddAutoMapper(typeof(LoginApiModelProfile));
 builder.Services.AddAutoMapper(typeof(QuestionApiModelProfile));
+builder.Services.AddAutoMapper(typeof(User));
+
 //Email Configuration
 var emailConfig = builder.Configuration
         .GetSection("EmailConfiguration")
@@ -117,7 +119,6 @@ builder.Services.AddSwaggerGen(
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

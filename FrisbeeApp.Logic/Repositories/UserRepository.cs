@@ -33,21 +33,15 @@ namespace FrisbeeApp.Logic.Repositories
             List<TeamMemberDTO> list= new List<TeamMemberDTO>();
             foreach (var teamMember in teamMembers) 
             {
-                var role = await _authRepository.GetRole(teamMember.Email);
-                if (role != null && role != ChosenRole.Coach.ToString())
-                {
-                    var member = _mapper.Map<TeamMemberDTO>(teamMember);
-                    member.Role = role;
-                    list.Add(member);
-                }
-
+                var member = _mapper.Map<TeamMemberDTO>(teamMember);
+                list.Add(member);
             }
             return list;
         }
 
-        public async Task<bool> UpdateUser(Guid Id, User user)
+        public async Task<bool> UpdateUser(string email, User user)
         {
-            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("User not found"); 
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email) ?? throw new EntityNotFoundException("User not found"); 
             dbUser.FirstName = user.FirstName!=null ? user.FirstName : dbUser.FirstName;
             dbUser.LastName = user.LastName!=null ? user.LastName : dbUser.LastName;
             if(user.Email != null)
@@ -144,6 +138,45 @@ namespace FrisbeeApp.Logic.Repositories
                     }
                     return await _context.SaveChangesAsync() > 0;
                 }
+            }
+            return false;
+        }
+
+        public async Task<TeamMemberDTO> GetUserDetails(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (dbUser != null)
+            {
+                var userDetails = _mapper.Map<TeamMemberDTO>(dbUser);
+                var role = await _authRepository.GetRole(dbUser.Email);
+                if (role != null)
+                {
+                    if(role == ChosenRole.Player.ToString())
+                    {
+                        userDetails.Role = ChosenRole.Player; 
+                    }
+                    else if (role == ChosenRole.Coach.ToString())
+                    {
+                        userDetails.Role = ChosenRole.Coach;
+                    }
+                    else if(role == ChosenRole.Admin.ToString())
+                    {
+                        userDetails.Role = ChosenRole.Admin;
+                    }
+                }
+                return userDetails;
+            }
+            return null;
+        }
+
+        public async Task<bool> ConfirmEmail(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if(dbUser != null)
+            {
+                dbUser.EmailConfirmed = true;
+                _context.Update(dbUser);
+                return true;
             }
             return false;
         }

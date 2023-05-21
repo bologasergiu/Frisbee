@@ -47,6 +47,10 @@ namespace FrisbeeApp.EmailSender.EmailService
             {
                 message.Subject = "Timeoff request status updated";
             }
+            else if (templateType == EmailTemplateType.PasswordChanged)
+            {
+                message.Subject = "Password updated";
+            }
 
             var emailMessage = CreateMessage(message, templateType, model);
             Send(emailMessage);
@@ -92,6 +96,12 @@ namespace FrisbeeApp.EmailSender.EmailService
                 pathToFile = pathToFile
                     + Path.DirectorySeparatorChar.ToString()
                     + "TimeOffRequestChangeStatusTemplate.cshtml";
+            }
+            else if (emailTemplateType == EmailTemplateType.PasswordChanged)
+            {
+                pathToFile = pathToFile
+                    + Path.DirectorySeparatorChar.ToString()
+                    + "PasswordChanged.cshtml";
             }
 
             var body = _templateFiller.FillTemplate(pathToFile, model);
