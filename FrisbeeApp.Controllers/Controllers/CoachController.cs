@@ -6,6 +6,7 @@ using FrisbeeApp.EmailSender.Abstractions;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
+using FrisbeeApp.Logic.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +22,11 @@ namespace FrisbeeApp.Controllers.Controllers
         private readonly IMapper _mapper;
         private readonly ICoachRepository _coachRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IAdminRepository _adminRepository;
         private readonly IEmailService _emailService;
         private List<string> emailList;
 
-        public CoachController(FrisbeeAppContext context, IMapper mapper, ICoachRepository coachRepository, IUserRepository userRepository, IEmailService emailService)
+        public CoachController(FrisbeeAppContext context, IMapper mapper, ICoachRepository coachRepository, IUserRepository userRepository,IAdminRepository adminRepository, IEmailService emailService)
         {
             _context = context;
             _mapper = mapper;
@@ -82,6 +84,48 @@ namespace FrisbeeApp.Controllers.Controllers
 
             return _mapper.Map<List<TimeOffRequestCoachDTO>>(timeOffRequestsList);
         }
-        
+
+        [Authorize(Roles = "Coach")]
+        [Route("get-all-trainings")]
+        [HttpGet]
+        public async Task<List<TrainingDTO>> GetTrainings()
+        {
+            var trainigs = await _coachRepository.GetTrainings();
+            var taringDtoList = new List<TrainingDTO>();
+
+            foreach (var training in trainigs)
+            {
+                var trainingDto = _mapper.Map<TrainingDTO>(training);
+                taringDtoList.Add(trainingDto);
+            }
+            return taringDtoList;
+        }
+
+        [Authorize(Roles = "Coach")]
+        [Route("get-trainings-per-team/{teamName}")]
+        [HttpGet]
+        public async Task<List<TrainingDTO>> GetTrainingsPerTeam(string teamName)
+        {
+            var trainigs = await _coachRepository.GetTrainingsPerTeam(teamName);
+            var taringDtoList = new List<TrainingDTO>();
+
+            foreach (var training in trainigs)
+            {
+                var trainingDto = _mapper.Map<TrainingDTO>(training);
+                taringDtoList.Add(trainingDto);
+            }
+            return taringDtoList;
+        }
+
+        [Authorize(Roles = "Coach")]
+        [HttpGet]
+        [Route("get-all-teams")]
+        public async Task<List<TeamModelDTO>> GetAllTeams()
+        {
+            List<TeamModelDTO> teams = new List<TeamModelDTO>();
+            teams = await _coachRepository.GetAllTeams();
+            return teams;
+        }
+
     }
 }

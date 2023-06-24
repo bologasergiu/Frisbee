@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
+using System.Reflection.Emit;
 
 namespace FrisbeeApp.Context
 {
@@ -10,6 +12,7 @@ namespace FrisbeeApp.Context
         public FrisbeeAppContext(DbContextOptions<FrisbeeAppContext> options) : base(options)  { }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Training> Trainings { get; set; }
+        public DbSet<User> Players { get; set; }
         public DbSet<TimeOffRequest> TimeOffRequests{ get; set; }
         public DbSet<Question> QuizQuestions { get; set; }
 
@@ -17,6 +20,8 @@ namespace FrisbeeApp.Context
         {
             base.OnModelCreating(builder);
 
+
+            builder.Entity<Question>().HasNoKey();
             builder.Entity<Role>().HasData(
                 new Role()
                 {

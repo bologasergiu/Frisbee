@@ -14,5 +14,10 @@
         public string? UserType { get; set; }
         public string? RequestStatus { get; set; }
         public string? RequestId{ get; set; }
+        public string? UserEmail { get; set; }
+        public string? UserToken { get; set; }
+
+
+
     }
 }

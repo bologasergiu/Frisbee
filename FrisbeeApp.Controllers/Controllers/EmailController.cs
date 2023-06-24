@@ -3,7 +3,9 @@ using FrisbeeApp.Logic.Abstractisations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Web;
+using static FrisbeeApp.Logic.Repositories.AuthRepository;
 
 namespace FrisbeeApp.Controllers.Controllers
 {
@@ -22,21 +24,31 @@ namespace FrisbeeApp.Controllers.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("ConfirmEmail/{userEmail}/{userToken}")]
-        public async Task<bool> ConfirmEmail(string userEmail, string userToken)
+        public async Task<IActionResult> ConfirmEmail(string userEmail, string userToken)
         {
             var email = HttpUtility.UrlDecode(userEmail);
             var token = HttpUtility.UrlDecode(userToken);
-            return await _authRepository.ConfirmAccount(email, token);
+            var confirmed  =  await _authRepository.ConfirmAccount(email, token);
+            if(confirmed) 
+            {             
+                return Redirect($"http://localhost:4200/login");
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
         }
 
         [HttpGet]
         [AllowAnonymous]
         [Route("ConfirmNewPassword/{userEmail}/{userToken}")]
-        public async Task<bool> ConfirmNewPassword(string userEmail, string userToken)
+        public IActionResult ConfirmNewPassword(string userEmail, string userToken)
         {
             var email = HttpUtility.UrlDecode(userEmail);
             var token = HttpUtility.UrlDecode(userToken);
-            return await _authRepository.ConfirmAccount(email, token);
+            var redirectUrl = $"http://localhost:4200/change-password?email={email}&token={token}";
+            return Redirect(redirectUrl);
         }
     }
 }

@@ -130,6 +130,6 @@ namespace FrisbeeApp.Logic.Repositories
             users = _context.Users.Where(x=>x.Team ==  teamName).ToList();
             return users.Count;
         }
-
+            
     }
 }

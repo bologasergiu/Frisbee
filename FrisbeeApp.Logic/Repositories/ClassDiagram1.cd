@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FrisbeeApp.Logic.Repositories.AdminRepository">
+    <Position X="3.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAABAEAAAgABAAEAAABAAAABAAQAAAAAAAEEAEAAAA=</HashCode>
+      <FileName>Repositories\AdminRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FrisbeeApp.Logic.Repositories.AuthRepository">
+    <Position X="1.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIBAEAgAAABABAAABAAAYQAAABAAAAAAAQAAAACCA=</HashCode>
+      <FileName>Repositories\AuthRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FrisbeeApp.Logic.Repositories.CoachRepository">
+    <Position X="6" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAkABAAAAAAAgAAABAIQAAAABAAAIAAAAAA=</HashCode>
+      <FileName>Repositories\CoachRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FrisbeeApp.Logic.Repositories.PlayerRepository">
+    <Position X="8.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAABAAAAAAAAAAAQAAAAAAEAgAAACAIAAA=</HashCode>
+      <FileName>Repositories\PlayerRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FrisbeeApp.Logic.Repositories.UserRepository">
+    <Position X="10.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAABQBAAAAAABAAAAQwAAAIAEAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\UserRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FrisbeeApp.Logic.DtoModels.LoginDTO">
+    <Position X="2" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>DtoModels\LoginDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Logic.DtoModels.TeamModelDTO">
+    <Position X="3.5" Y="8.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACQAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DtoModels\TeamModelDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Logic.DtoModels.TimeOffRequestCoachDTO">
+    <Position X="5.25" Y="8.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAgAAAAAEAAAQAACEAAAAA=</HashCode>
+      <FileName>DtoModels\TimeOffRequestCoachDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Logic.DtoModels.TimeOffRequestPlayerDTO">
+    <Position X="7.25" Y="8.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAAAAAAAAAAAAAgAAAAAEAAAAAAAEAAAAA=</HashCode>
+      <FileName>DtoModels\TimeOffRequestPlayerDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Logic.DtoModels.TrainingDTO">
+    <Position X="9.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAIAAAAAAAAAAAAAAAABEAAAAAAAgAA=</HashCode>
+      <FileName>DtoModels\TrainingDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Logic.DtoModels.TokenDTO">
+    <Position X="11" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>DtoModels\TokenDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.DatabaseModels.Models.User">
+    <Position X="0.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="FrisbeeApp.DatabaseModels.Models.Training">
+    <Position X="5" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="FrisbeeApp.DatabaseModels.Models.TimeOffRequest">
+    <Position X="2" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="FrisbeeApp.DatabaseModels.Models.Team">
+    <Position X="3.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="FrisbeeApp.DatabaseModels.Models.Role">
+    <Position X="6.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="FrisbeeApp.Logic.Abstractions.IUserRepository">
+    <Position X="8" Y="5.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAABQAAAAAAAAAAAAQwAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Abstractions\IUserRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FrisbeeApp.Logic.Abstractions.IPlayerRepository">
+    <Position X="10" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAAAQAAAAAAAAgAAACAIAAA=</HashCode>
+      <FileName>Abstractions\IPlayerRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FrisbeeApp.Logic.Abstractions.IAdminRepository">
+    <Position X="3.25" Y="5.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAEAAAAAAAAAAAQAAAAAAAEEAEAAAA=</HashCode>
+      <FileName>Abstractions\IAdminRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FrisbeeApp.Logic.Abstractisations.IAuthRepository">
+    <Position X="0.5" Y="5.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAABAAAAAAAYAAAABAAAAAAAQAAAACCA=</HashCode>
+      <FileName>Abstractions\IAuthRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FrisbeeApp.Logic.Abstractions.ICoachRepository">
+    <Position X="5.5" Y="5.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAkAAAAAAAAAgAAAAAIQAAAABAAAIAAAAAA=</HashCode>
+      <FileName>Abstractions\ICoachRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

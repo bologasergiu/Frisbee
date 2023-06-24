@@ -4,6 +4,7 @@ using FrisbeeApp.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FrisbeeApp.Context.Migrations
 {
     [DbContext(typeof(FrisbeeAppContext))]
-    partial class FrisbeeAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230521183708_Revert_AddAttendingUsersToTraining")]
+    partial class Revert_AddAttendingUsersToTraining
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,32 +24,20 @@ namespace FrisbeeApp.Context.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("FrisbeeApp.DatabaseModels.Models.PlayerTraining", b =>
-                {
-                    b.Property<Guid>("PlayerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TrainingId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("PlayerId", "TrainingId");
-
-                    b.HasIndex("TrainingId");
-
-                    b.ToTable("PlayerTraining");
-                });
-
             modelBuilder.Entity("FrisbeeApp.DatabaseModels.Models.Question", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("CorrectAnswer")
                         .HasColumnType("bit");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("QuizQuestions");
                 });
@@ -254,6 +244,12 @@ namespace FrisbeeApp.Context.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TrainingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TrainingId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -270,6 +266,10 @@ namespace FrisbeeApp.Context.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("TrainingId");
+
+                    b.HasIndex("TrainingId1");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -377,23 +377,15 @@ namespace FrisbeeApp.Context.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FrisbeeApp.DatabaseModels.Models.PlayerTraining", b =>
+            modelBuilder.Entity("FrisbeeApp.DatabaseModels.Models.User", b =>
                 {
-                    b.HasOne("FrisbeeApp.DatabaseModels.Models.User", "Player")
-                        .WithMany("PlayerTrainings")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("FrisbeeApp.DatabaseModels.Models.Training", null)
+                        .WithMany("AttendingUsers")
+                        .HasForeignKey("TrainingId");
 
-                    b.HasOne("FrisbeeApp.DatabaseModels.Models.Training", "Training")
-                        .WithMany("PlayerTrainings")
-                        .HasForeignKey("TrainingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Player");
-
-                    b.Navigation("Training");
+                    b.HasOne("FrisbeeApp.DatabaseModels.Models.Training", null)
+                        .WithMany("NonAttendingUsers")
+                        .HasForeignKey("TrainingId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -449,12 +441,9 @@ namespace FrisbeeApp.Context.Migrations
 
             modelBuilder.Entity("FrisbeeApp.DatabaseModels.Models.Training", b =>
                 {
-                    b.Navigation("PlayerTrainings");
-                });
+                    b.Navigation("AttendingUsers");
 
-            modelBuilder.Entity("FrisbeeApp.DatabaseModels.Models.User", b =>
-                {
-                    b.Navigation("PlayerTrainings");
+                    b.Navigation("NonAttendingUsers");
                 });
 #pragma warning restore 612, 618
         }
