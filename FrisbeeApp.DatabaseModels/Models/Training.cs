@@ -1,4 +1,6 @@
-﻿namespace FrisbeeApp.DatabaseModels.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FrisbeeApp.DatabaseModels.Models
 {
     public class Training
     {
@@ -8,6 +10,9 @@
         public TrainingField Field { get; set; }
         public string Team { get; set; }
         public string CoachName { get; set; }
-
+        [NotMapped]
+        public List<string> GoingPlayers { get; set; }
+        [NotMapped]
+        public List<string> NoNGoingPlayers { get; set; }
     }
 }

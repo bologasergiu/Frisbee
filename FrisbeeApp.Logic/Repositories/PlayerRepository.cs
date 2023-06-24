@@ -2,8 +2,11 @@
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
+using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Operators;
 
 namespace FrisbeeApp.Logic.Repositories
 {
@@ -34,21 +37,26 @@ namespace FrisbeeApp.Logic.Repositories
             return false;
         }
 
-        public async Task<bool> CancelledTimeOffRequest(Guid Id)
+        public async Task<bool> DeleteTimeOffRequest(Guid Id)
         {
-            var existingTimeOffRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id) ?? throw new EntityNotFoundException("Timeoff request does not exist!");
-            if (existingTimeOffRequest.Status == RequestStatus.Cancelled)
+            var existingTimeOffRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id);
+
+            if (existingTimeOffRequest == null)
             {
-                throw new RequestAlreadyCancelled("Request is already cancelled and can not be edited!");
+                throw new EntityNotFoundException("Timeoff request does not exist!");
             }
 
-            existingTimeOffRequest.Status = RequestStatus.Cancelled;
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
-                return true;
+            if (existingTimeOffRequest.Status == RequestStatus.Cancelled)
+            {
+                throw new RequestAlreadyCancelled("Request is already cancelled and cannot be edited!");
+            }
 
-            return false;
+            _context.TimeOffRequests.Remove(existingTimeOffRequest);
+            var result = await _context.SaveChangesAsync();
+
+            return result > 0;
         }
+
 
         public async Task<List<TimeOffRequest>> ViewAllTimeOffRequest(string email)
         {
@@ -75,5 +83,22 @@ namespace FrisbeeApp.Logic.Repositories
             }
             return result;
         }
+
+        public async Task<List<Training>> GetTrainings(string email)
+        {
+            var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            var teamName = dbUser.Team;
+            var trainings = await _context.Trainings.Where(x => x.Team == teamName).ToListAsync();
+            var trainingDtos = new List<TrainingDTO>();
+            foreach (var training in trainings)
+            {
+                if(training.Team != teamName)
+                {
+                    trainings.Remove(training);
+                }
+            }
+            return trainings;
+        }
+
     }
 }

@@ -160,28 +160,47 @@ namespace FrisbeeApp.Controllers.Controllers
         {
             return await _userRepository.ConfirmEmail(email);
         }
-
-        [Authorize]
-        [Route("change-password/")]
+        [AllowAnonymous]
+        [Route("change-password-request/{email}")]
         [HttpPut]
-        public async Task<bool> ChangePassword(ChangePasswordApiModel model)
+        public async Task<bool> ChangePasswordRequest(string email)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
             if (user == null)
             {
                 return false;
             }
 
-            var token = await _authRepository.GenerateConfirmNewPasswordToken(model.Email);
-            var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+            var token = await _authRepository.GenerateConfirmNewPasswordToken(email);
+            var returnUrl = $"http://localhost:4200/change-password?userEmail={HttpUtility.UrlEncode(user.Email)}&userToken={HttpUtility.UrlEncode(token)}";
+            var link = Url.Action("ConfirmNewPassword", "Email", new { userEmail = HttpUtility.UrlEncode(user.Email), userToken = HttpUtility.UrlEncode(token), returnUrl }, protocol: Request.Scheme);
 
-            if (!result.Succeeded)
+            _emailService.SendEmail(EmailTemplateType.PasswordChanged, new List<string> { email }, new EmailInfo
+            {
+               Link = link
+            }); ;
+            return true;
+
+            
+        }
+
+        [AllowAnonymous]
+        [Route("change-password")]
+        [HttpPut]
+        public async Task<bool> ChangePassword(ChangePasswordApiModel changePasswordApiModel)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == changePasswordApiModel.Email);
+            if (user == null)
             {
                 return false;
             }
-            return true;
-        }
+            var token = await _authRepository.GenerateConfirmNewPasswordToken(changePasswordApiModel.Email);
+            var result = await _userManager.ResetPasswordAsync(user, token, changePasswordApiModel.Password);
 
+            return true;
+
+
+        }
     };
 }
        

@@ -71,7 +71,6 @@ namespace FrisbeeApp.Controllers.Controllers
             teams = await _adminRepository.GetAllTeams();
             return teams;
         }
-
         [HttpGet]
         [Route("get-all-users")]
         public async Task<List<TeamMemberDTO>> GetAllUsers()

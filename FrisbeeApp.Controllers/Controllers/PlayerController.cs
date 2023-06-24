@@ -58,11 +58,11 @@ namespace FrisbeeApp.Controllers.Controllers
         }
 
         [Authorize(Roles = "Player")]
-        [Route("delete-timeoff-request")]
+        [Route("delete-timeoff-request/{id}")]
         [HttpPut]
-        public async Task<bool> CancelledTimeOffRequest(Guid Id)
+        public async Task<bool> DeleteTimeOffRequest(Guid Id)
         {
-            return await _playerRepository.CancelledTimeOffRequest(Id);
+            return await _playerRepository.DeleteTimeOffRequest(Id);
         }
 
         [Authorize(Roles = "Player")]
@@ -84,6 +84,22 @@ namespace FrisbeeApp.Controllers.Controllers
         {
 
             return await _quizRepository.GetQuizQuestions();
+        }
+
+        [Authorize(Roles = "Player")]
+        [Route("get-trainings")]
+        [HttpGet]
+        public async Task<List<TrainingDTO>> GetTrainings()
+        {
+            var trainigs = await _playerRepository.GetTrainings(User.Identity.Name);
+            var taringDtoList = new List<TrainingDTO>();
+
+            foreach (var training in trainigs) { 
+                var trainingDto = _mapper.Map<TrainingDTO>(training);
+                taringDtoList.Add(trainingDto);
+            }
+            return taringDtoList;
+
         }
     }
 }

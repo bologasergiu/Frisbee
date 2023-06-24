@@ -3,8 +3,10 @@ using FrisbeeApp.Context;
 using FrisbeeApp.DatabaseModels.Models;
 using FrisbeeApp.Logic.Abstractions;
 using FrisbeeApp.Logic.Abstractisations;
+using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Utilities.IO;
 using System.Collections;
 
 namespace FrisbeeApp.Logic.Repositories
@@ -96,5 +98,37 @@ namespace FrisbeeApp.Logic.Repositories
             var dbRequest = await _context.TimeOffRequests.FirstOrDefaultAsync(x => x.Id == Id);
             return dbRequest.UserEmail;
         }
+
+        public async Task<List<Training>> GetTrainings()
+        {
+            var trainings = await _context.Trainings.ToListAsync();
+            return trainings;
+        }
+
+        public async Task<List<TeamModelDTO>> GetAllTeams()
+        {
+            var teamsList = await _context.Teams.ToListAsync();
+            return teamsList.Select(team => new TeamModelDTO
+            {
+                TeamName = team.TeamName,
+                Id = team.Id,
+                NumberOfMembers = getNumberOfMembers(team.TeamName)
+            }).ToList();
+        }
+
+        public async Task<List<Training>> GetTrainingsPerTeam(string teamName)
+        {
+            var trainings = await _context.Trainings.Where(x => x.Team == teamName).ToListAsync();
+            return trainings;
+        }
+
+        private int getNumberOfMembers(string teamName)
+        {
+            List<User> users = new List<User>();
+            users = _context.Users.Where(x => x.Team == teamName).ToList();
+            return users.Count;
+        }
+
+        
     }
 }

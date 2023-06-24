@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FrisbeeApp.Controllers.Controllers.UserController">
+    <Position X="1.5" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAEBAAgAABQhAAAAAABACZQQQABAIAEAAAQAAAAAAA=</HashCode>
+      <FileName>Controllers\UserController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Controllers.CoachController">
+    <Position X="13" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>QCAAAAAhAAAABAAAAACBgAAQAAIQAABAAAAAIAAAIAA=</HashCode>
+      <FileName>Controllers\CoachController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Controllers.EmailController">
+    <Position X="7.25" Y="1.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAAAAIAEgAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\EmailController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Controllers.PlayerController">
+    <Position X="4.5" Y="1.5" Width="2.75" />
+    <Members>
+      <Method Name="GetQuizQuestions" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAABhAAAAAAABAAABBABAQAAAAAAAiAAAAAAIAAA=</HashCode>
+      <FileName>Controllers\PlayerController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Controllers.AdminController">
+    <Position X="10" Y="1.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAEAAASAAAAAABQAAAACAAEAAEAIAA=</HashCode>
+      <FileName>Controllers\AdminController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.LoginApiModelProfile">
+    <Position X="8" Y="7" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\LoginApiModelProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.RegisterApiModelProfile">
+    <Position X="10.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\RegisterApiModelProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.TeamModelProfile">
+    <Position X="4.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\TeamModelProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.TimeOffRequestCoachProfile">
+    <Position X="8" Y="8.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\TimeOffRequestCoachProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.TimeOffRequestPlayerProfile">
+    <Position X="5.75" Y="7" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\TimeOffRequestPlayerProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.TimeOffRequestProfile">
+    <Position X="5.75" Y="8.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\TimeOffRequestProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.TrainingProfile">
+    <Position X="4.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\TrainingProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrisbeeApp.Controllers.Mappers.UserProfile">
+    <Position X="10.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mappers\UserProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

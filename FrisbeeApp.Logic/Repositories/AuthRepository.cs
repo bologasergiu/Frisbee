@@ -8,6 +8,7 @@ using FrisbeeApp.Logic.Abstractisations;
 using FrisbeeApp.Logic.Common;
 using FrisbeeApp.Logic.DtoModels;
 using FrisbeeApp.Logic.Exceptions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -126,16 +127,23 @@ namespace FrisbeeApp.Logic.Repositories
             return token;
         }
 
+
         public async Task<bool> ConfirmAccount(string email, string userToken)
         {
             var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
-            if (dbUser != null && userToken != null && dbUser.EmailConfirmed != true)
+            if (dbUser != null && userToken != null)
             {
                 var result = await _userManager.ConfirmEmailAsync(dbUser, userToken);
-                return result == IdentityResult.Success ? true : false;
+                
+                if(result != null)
+                {
+                    return true;
+                }
             }
             return false;
         }
+
+
 
         public async Task<string> GenerateConfirmNewPasswordToken(string email)
         {
